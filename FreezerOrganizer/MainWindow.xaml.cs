@@ -23,6 +23,7 @@ namespace FreezerOrganizer
         public MainWindow()
         {
             InitializeComponent();
+
         }
     }
 }
