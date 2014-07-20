@@ -15,11 +15,33 @@ namespace FreezerOrganizer.ViewModel
         private ObservableCollection<Item> results;
         private Item selectedItem;
         private ICommand searchCommand;
+        private ICommand deleteItemCommand;
+        private ICommand updateItemNumberCommand;
+        private MainViewModel parentViewModel;
 
-        public SearchViewModel()
+        public SearchViewModel() { }
+
+        public SearchViewModel(MainViewModel parentViewModel)
         {
+            this.ParentViewModel = parentViewModel;
         }
-    
+
+        public MainViewModel ParentViewModel
+        {
+            get
+            {
+                return parentViewModel;
+            }
+            set
+            {
+                if (parentViewModel != value)
+                {
+                    parentViewModel = value;
+                    OnPropertyChanged("ParentViewModel");
+                }
+            }
+        }
+
         public string Input
         {
             get
@@ -49,22 +71,6 @@ namespace FreezerOrganizer.ViewModel
             }
         }
 
-
-        public ICommand SearchCommand
-        {
-            get
-            {
-                if (searchCommand == null)
-                {
-                    searchCommand = new RelayCommand(
-                        param => Search((string)param),
-                        param => (Input != null)
-                        );
-                }
-                return searchCommand;
-            }
-        }
-
         public Item SelectedItem
         {
             get
@@ -81,14 +87,61 @@ namespace FreezerOrganizer.ViewModel
             }
         }
 
+        public ICommand SearchCommand
+        {
+            get
+            {
+                if (searchCommand == null)
+                {
+                    searchCommand = new RelayCommand(param => Search((string)param));
+                }
+                return searchCommand;
+            }
+        }
+
         private void Search(string input)
         {
-            // do something to get results (deserialization)
-            // var results = new JavascriptSerializer( ).Deserialize<List<string>>( searchParamThatWasInConstructor );
-            // That's just a fake example
-
-            var RetrievedItems = new ObservableCollection<Item>(results);
-            SelectedItem = RetrievedItems.Count > 0 ? RetrievedItems[0] : null;
+            results = new ObservableCollection<Item>(Services.Search(input));
+            SelectedItem = results.Count > 0 ? results[0] : null;
         }
+
+
+        public ICommand DeleteItemCommand
+        {
+            get
+            {
+                if (deleteItemCommand == null)
+                {
+                    deleteItemCommand = new RelayCommand(
+                        param => DeleteItem(),
+                        param => (SelectedItem != null)
+                        );
+                }
+                return deleteItemCommand;
+            }
+        }
+
+        private void DeleteItem() 
+        {
+ 
+        }
+
+        public ICommand UpdateItemNumberCommand
+        {
+            get
+            {
+                if (updateItemNumberCommand == null)
+                {
+                    updateItemNumberCommand = new RelayCommand(
+                        param => UpdateItem(),
+                        param => (SelectedItem != null)
+                        );
+                }
+                return updateItemNumberCommand;
+            }
+        }
+
+        private void UpdateItem() { }
+
     }
 }

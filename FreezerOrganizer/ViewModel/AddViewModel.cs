@@ -10,29 +10,52 @@ namespace FreezerOrganizer.ViewModel
 {
     class AddViewModel : CommonBase
     {
-        private Item item;
+        private string name;
+        private int number;
+        private DateTime dateOfFreezing;
         private ICommand addItemCommand;
-        private ICommand deleteItemCommand;
-        private ICommand updateItemNumberCommand;
+        private MainViewModel parentViewModel;
 
-        public AddViewModel()
+        public AddViewModel() { }
+
+        public AddViewModel(MainViewModel parentViewModel)
         {
+            this.ParentViewModel = parentViewModel;
         }
 
-        public Item Item 
+        
+        public MainViewModel ParentViewModel
         {
             get
             {
-                return item;
+                return parentViewModel;
             }
             set
             {
-                if (item != value)
+                if (parentViewModel != value)
                 {
-                    item = value;
-                    OnPropertyChanged("Item");
+                    parentViewModel = value;
+                    OnPropertyChanged("ParentViewModel");
                 }
             }
+        }
+
+        public string Name
+        {
+            get;
+            set;
+        }
+
+        // Add a 'No portions' at a later time to supplement Number.
+        public int Number
+        {
+            set { number = value; }
+        }
+
+        public DateTime DateOfFreezing
+        {
+            get { if (dateOfFreezing == null) return DateTime.Today; else return dateOfFreezing; }
+            set { dateOfFreezing = value; }
         }
 
         public ICommand AddItemCommand
@@ -43,47 +66,14 @@ namespace FreezerOrganizer.ViewModel
                 {
                     addItemCommand = new RelayCommand(
                         param => AddItem(),
-                        param => (Item != null)
+                        param => (Name != null)
                         );
                 }
                 return addItemCommand;
             }
         }
 
-        public ICommand DeleteItemCommand
-        {
-            get
-            {
-                if (deleteItemCommand == null)
-                {
-                    deleteItemCommand = new RelayCommand(
-                        param => DeleteItem(),
-                        param => (Item != null)
-                        );
-                }
-                return deleteItemCommand;
-            }
-        }
-
-        public ICommand UpdateItemNumberCommand
-        {
-            get
-            {
-                if (updateItemNumberCommand == null)
-                {
-                    updateItemNumberCommand = new RelayCommand(
-                        param => UpdateItem(),
-                        param => (Item != null)
-                        );
-                }
-                return updateItemNumberCommand;
-            }
-        }
-
         private void AddItem() { }
 
-        private void DeleteItem() { }
-
-        private void UpdateItem() { }
     }
 }
