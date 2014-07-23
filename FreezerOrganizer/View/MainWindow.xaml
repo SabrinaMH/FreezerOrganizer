@@ -6,18 +6,16 @@
         xmlns:view="clr-namespace:FreezerOrganizer.View"
         xmlns:viewModel="clr-namespace:FreezerOrganizer.ViewModel"
         Title="Freezer Organizer">
-    
     <Window.DataContext>
         <viewModel:MainViewModel/>
     </Window.DataContext>
-    
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <ei:CallMethodAction TargetObject="{Binding}" MethodName="Load"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Grid>
-        <TabControl x:Name="TabControl" TabStripPlacement="Left">
+        <TabControl TabStripPlacement="Left">
             <TabItem Header="Add" IsSelected="True">
                 <view:AddView Margin="30,0,0,0"/>
             </TabItem>

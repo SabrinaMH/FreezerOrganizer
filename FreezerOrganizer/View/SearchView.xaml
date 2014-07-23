@@ -2,11 +2,9 @@
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:viewModel="clr-namespace:FreezerOrganizer.ViewModel">
-    
     <UserControl.DataContext>
         <viewModel:SearchViewModel/>
     </UserControl.DataContext>
-    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -16,8 +14,18 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <TextBox Margin="0,0,0,20" Grid.Row="0" Grid.Column="0" Width="100" Text="{Binding Input}"/>
-        <Button x:Name="btnSearch" Margin="30,0,0,20" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Content="Search" Width="100" Command="{Binding SearchCommand}"/>
-        <DataGrid x:Name="dataGridResults" Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{Binding Results}" SelectedItem="{Binding SelectedItem}"/>
+        <TextBox Text="{Binding Input}" Margin="0,0,0,20" Grid.Row="0" Grid.Column="0" Width="100"/>
+        <Button Command="{Binding SearchCommand}" Margin="30,0,0,20" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Content="Search" Width="100"/>
+        <DataGrid ItemsSource="{Binding Results}" 
+                  SelectedItem="{Binding SelectedItem}"
+                  AutoGenerateColumns="False"
+                  Grid.Row="1" Grid.ColumnSpan="2">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+                <DataGridTextColumn Header="Number" Binding="{Binding Number}"/>
+                <DataGridTextColumn Header="Freezing date" Binding="{Binding DateOfFreezing, StringFormat=\{0:dd.MM.yy\}}"/>
+            </DataGrid.Columns>
+            <!-- todo: user is actually able to add rows to the grid. That could be the way to add new items -->
+        </DataGrid>
     </Grid>
 </UserControl>

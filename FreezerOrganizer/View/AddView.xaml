@@ -3,11 +3,9 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
       xmlns:viewModel="clr-namespace:FreezerOrganizer.ViewModel">
-    
     <UserControl.DataContext>
         <viewModel:AddViewModel/>
-    </UserControl.DataContext>
-        
+    </UserControl.DataContext>       
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -24,8 +22,8 @@
         <Label Content="Date:" Grid.Row="2" Grid.Column="0"/>
         <TextBox Text="{Binding Name}" Margin="0,0,0,10" Grid.Row="0" Grid.Column="1"></TextBox>
         <TextBox Text="{Binding Number}" Margin="0,0,0,10" Grid.Row="1" Grid.Column="1"></TextBox>
-        <DatePicker Text="{Binding DateOfFreezing}" Grid.Row="2" Grid.Column="1"/> <!-- DisplayDate="{x:Static sys:DateTime.Now}" -->
-        <Button Command="{Binding AddItemCommand}"  Content="Add" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Left" Margin="30,0,0,0" Width="100" VerticalAlignment="Center"></Button>
+        <DatePicker Text="{Binding DateOfFreezing}" Grid.Row="2" Grid.Column="1" DisplayDate="{x:Static sys:DateTime.Now}"/>
+        <Button Command="{Binding AddItemCommand}" Content="Add" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Left" Margin="30,0,0,0" Width="100" VerticalAlignment="Center"></Button>
     </Grid>
 </UserControl>
  

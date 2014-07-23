@@ -8,7 +8,7 @@ using FreezerOrganizer.Model;
 
 namespace FreezerOrganizer.ViewModel
 {
-    class MainViewModel : CommonBase
+    public class MainViewModel : CommonBase
     {
         private ICommand closeCommand;
         private List<Item> allItems;

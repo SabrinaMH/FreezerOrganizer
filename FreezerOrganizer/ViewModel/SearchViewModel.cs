@@ -9,11 +9,11 @@ using System.Collections.ObjectModel;
 
 namespace FreezerOrganizer.ViewModel
 {
-    class SearchViewModel : CommonBase
+    public class SearchViewModel : CommonBase
     {
         private string input;
-        private ObservableCollection<Item> results;
-        private Item selectedItem;
+        private ObservableCollection<ItemViewModel> results; // perhaps it should be of ItemViewModel and not Item
+        private ItemViewModel selectedItem;
         private ICommand searchCommand;
         private ICommand deleteItemCommand;
         private ICommand updateItemNumberCommand;
@@ -58,7 +58,7 @@ namespace FreezerOrganizer.ViewModel
             }
         }
         
-        public ObservableCollection<Item> Results
+        public ObservableCollection<ItemViewModel> Results
         {
             get
             {
@@ -71,7 +71,7 @@ namespace FreezerOrganizer.ViewModel
             }
         }
 
-        public Item SelectedItem
+        public ItemViewModel SelectedItem
         {
             get
             {
@@ -93,7 +93,7 @@ namespace FreezerOrganizer.ViewModel
             {
                 if (searchCommand == null)
                 {
-                    searchCommand = new RelayCommand(param => Search((string)param));
+                    searchCommand = new RelayCommand(param => Search(Input));
                 }
                 return searchCommand;
             }
@@ -101,8 +101,16 @@ namespace FreezerOrganizer.ViewModel
 
         private void Search(string input)
         {
-            results = new ObservableCollection<Item>(Services.Search(input));
-            SelectedItem = results.Count > 0 ? results[0] : null;
+            var resultsAsItemViewModels = new ObservableCollection<ItemViewModel>();
+            var resultsAsItems = Services.Search(Input);
+
+            foreach (Item item in resultsAsItems)
+            {
+                resultsAsItemViewModels.Add(new ItemViewModel(item.Name, item.Number, item.DateOfFreezing));
+            }
+
+            Results = resultsAsItemViewModels;
+            SelectedItem = Results.Count > 0 ? Results[0] : null;
         }
 
 

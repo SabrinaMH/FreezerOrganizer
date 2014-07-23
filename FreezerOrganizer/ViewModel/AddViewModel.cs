@@ -22,7 +22,6 @@ namespace FreezerOrganizer.ViewModel
         {
             this.ParentViewModel = parentViewModel;
         }
-
         
         public MainViewModel ParentViewModel
         {

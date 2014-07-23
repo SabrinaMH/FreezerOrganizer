@@ -41,7 +41,7 @@ namespace FreezerOrganizer.ViewModel
 
         public void Execute(object parameter)
         {
-            if (execute != null)
+            if (execute != null) 
             {
                 execute(parameter);
             }

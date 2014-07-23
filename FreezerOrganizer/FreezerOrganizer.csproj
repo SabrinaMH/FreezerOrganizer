@@ -65,6 +65,7 @@
     <Compile Include="Data\Serialization.cs" />
     <Compile Include="Model\Services.cs" />
     <Compile Include="ViewModel\AddViewModel.cs" />
+    <Compile Include="ViewModel\ItemViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\RelayCommand.cs" />
     <Compile Include="ViewModel\SearchViewModel.cs" />
