@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace FreezerOrganizer.View
 {
     /// <summary>
-    /// Interaction logic for SearchView.xaml
+    /// Interaction logic for AddView.xaml
     /// </summary>
-    public partial class SearchView : UserControl
+    public partial class AddView : UserControl
     {
-        public SearchView()
+        public AddView()
         {
             InitializeComponent();
         }
