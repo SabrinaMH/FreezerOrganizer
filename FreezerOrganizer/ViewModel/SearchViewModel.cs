@@ -12,35 +12,13 @@ namespace FreezerOrganizer.ViewModel
     public class SearchViewModel : CommonBase
     {
         private string input;
-        private ObservableCollection<ItemViewModel> results; // perhaps it should be of ItemViewModel and not Item
+        private ObservableCollection<ItemViewModel> results; 
         private ItemViewModel selectedItem;
         private ICommand searchCommand;
-        private ICommand deleteItemCommand;
+        private ICommand deleteItemCommand; // should perhaps be placed on ItemViewModel and merged with the method below.
         private ICommand updateItemNumberCommand;
-        private MainViewModel parentViewModel;
 
         public SearchViewModel() { }
-
-        public SearchViewModel(MainViewModel parentViewModel)
-        {
-            this.ParentViewModel = parentViewModel;
-        }
-
-        public MainViewModel ParentViewModel
-        {
-            get
-            {
-                return parentViewModel;
-            }
-            set
-            {
-                if (parentViewModel != value)
-                {
-                    parentViewModel = value;
-                    OnPropertyChanged("ParentViewModel");
-                }
-            }
-        }
 
         public string Input
         {
@@ -102,7 +80,7 @@ namespace FreezerOrganizer.ViewModel
         private void Search(string input)
         {
             var resultsAsItemViewModels = new ObservableCollection<ItemViewModel>();
-            var resultsAsItems = Services.Search(Input);
+            var resultsAsItems = ItemRepository.Search(Input);
 
             foreach (Item item in resultsAsItems)
             {

@@ -11,27 +11,11 @@ namespace FreezerOrganizer.ViewModel
     public class MainViewModel : CommonBase
     {
         private ICommand closeCommand;
-        private List<Item> allItems;
-        private SearchViewModel searchViewModel;
-        private AddViewModel addViewModel;
+        private SearchViewModel resultsViewModel;
 
         public MainViewModel()
         {
-            searchViewModel = new SearchViewModel(this);
-            addViewModel = new AddViewModel(this);
-        }
-
-        public List<Item> AllItems
-        {
-            get
-            {
-                return allItems;
-            }
-            set
-            {
-                allItems = value;
-                OnPropertyChanged("AllItems");
-            }
+            resultsViewModel = new SearchViewModel();
         }
 
         public ICommand CloseCommand
@@ -52,12 +36,12 @@ namespace FreezerOrganizer.ViewModel
         public void Load()
         {
             //AllItems = Services.LoadItems();
-            Services.LoadItems();
+            ItemRepository.LoadItems();
         }
 
         private void Close()
         {
-            Services.SaveItems(AllItems);
+            ItemRepository.SaveItems();
         }
     }
 }

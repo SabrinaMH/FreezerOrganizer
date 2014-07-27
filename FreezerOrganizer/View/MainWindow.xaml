@@ -15,13 +15,6 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Grid>
-        <TabControl TabStripPlacement="Left">
-            <TabItem Header="Add" IsSelected="True">
-                <view:AddView Margin="30,0,0,0"/>
-            </TabItem>
-            <TabItem Header="Search" >
-                <view:SearchView Margin="30,0,0,0"/>
-            </TabItem>
-        </TabControl>
+        <view:SearchView/>
     </Grid>
 </Window>

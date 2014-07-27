@@ -7,11 +7,12 @@ using FreezerOrganizer.Data;
 
 namespace FreezerOrganizer.Model
 {
-    static class Services
+    // Provides mechanism to interact with storage.
+    static class ItemRepository
     {
         private static List<Item> items = new List<Item>();
 
-        internal static void SaveItems(List<Item> items)
+        internal static void SaveItems()
         {
             Serialization.SaveItems(items);
         }
