@@ -10,8 +10,8 @@
         <viewModel:MainViewModel/>
     </Window.DataContext>
     <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Loaded">
-            <ei:CallMethodAction TargetObject="{Binding}" MethodName="Load"/>
+        <i:EventTrigger EventName="Closing">
+            <i:InvokeCommandAction Command="{Binding ClosingCommand}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Grid>

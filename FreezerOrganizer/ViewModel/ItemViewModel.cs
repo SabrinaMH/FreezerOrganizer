@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 namespace FreezerOrganizer.ViewModel
 {
-    public class ItemViewModel : CommonBase
+    public class ItemViewModel : ViewModelBase
     {
         private string name;
         private int number;
         private DateTime dateOfFreezing;
+
+        public ItemViewModel() { } // Empty constructor needed for users to add rows to the datagrid.
 
         public ItemViewModel(string name, int number, DateTime dateOfFreezing) 
         {

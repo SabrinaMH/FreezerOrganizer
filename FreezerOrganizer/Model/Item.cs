@@ -9,11 +9,12 @@ namespace FreezerOrganizer.Model
     [Serializable()]
     public class Item 
     {
-        // make them private?
         public string Name { get; private set; }
         public int Number { get; private set; }
         public DateTime DateOfFreezing { get; private set; }
-    
+
+        public Item() { }
+
         public Item(string name, int number, DateTime dateOfFreezing)
         {
             this.Name = name;

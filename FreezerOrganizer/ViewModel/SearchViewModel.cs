@@ -6,19 +6,26 @@ using System.Threading.Tasks;
 using FreezerOrganizer.Model;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 
 namespace FreezerOrganizer.ViewModel
 {
-    public class SearchViewModel : CommonBase
+    public class SearchViewModel : ViewModelBase
     {
         private string input;
-        private ObservableCollection<ItemViewModel> results; 
+        private ObservableCollection<ItemViewModel> results;
+        private ItemRepository itemRepository;
         private ItemViewModel selectedItem;
         private ICommand searchCommand;
         private ICommand deleteItemCommand; // should perhaps be placed on ItemViewModel and merged with the method below.
         private ICommand updateItemNumberCommand;
 
-        public SearchViewModel() { }
+        public SearchViewModel() 
+        {
+            itemRepository = new ItemRepository();
+            UpdateResultsAndSelectedItem(itemRepository.GetAll());
+        }
 
         public string Input
         {
@@ -45,8 +52,36 @@ namespace FreezerOrganizer.ViewModel
             set
             {
                 results = value;
+                results.CollectionChanged += results_CollectionChanged;
                 OnPropertyChanged("Results");
             }
+        }
+
+        // gets called whenever items are added/removed from the list, as the collection is then changed.
+        private void results_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (ItemViewModel itemVM in e.NewItems)
+                {
+                    itemRepository.Add(new Item(itemVM.Name, itemVM.Number, itemVM.DateOfFreezing));
+                    itemVM.PropertyChanged += itemViewModel_PropertyChanged;
+                }
+            }
+
+            if (e.OldItems != null)
+            {
+                foreach (ItemViewModel itemVM in e.OldItems)
+                {
+                    itemRepository.Remove(itemVM.Name, itemVM.Number, itemVM.DateOfFreezing);
+                    itemVM.PropertyChanged -= itemViewModel_PropertyChanged;
+                }
+            }
+        }
+
+        private void itemViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("in propertyChanged");
         }
 
         public ItemViewModel SelectedItem
@@ -79,16 +114,25 @@ namespace FreezerOrganizer.ViewModel
 
         private void Search(string input)
         {
-            var resultsAsItemViewModels = new ObservableCollection<ItemViewModel>();
-            var resultsAsItems = ItemRepository.Search(Input);
+            var resultsAsItems = itemRepository.Search(Input);
+            UpdateResultsAndSelectedItem(resultsAsItems);
+        }
 
-            foreach (Item item in resultsAsItems)
+        private void UpdateResultsAndSelectedItem(List<Item> list)
+        {
+            Results = ConvertToObservableCollection(list);
+            SelectedItem = Results.Count > 0 ? Results[0] : null;
+        }
+
+        private ObservableCollection<ItemViewModel> ConvertToObservableCollection(List<Item> list)
+        {
+            var observableCollection = new ObservableCollection<ItemViewModel>();
+            foreach (Item item in list)
             {
-                resultsAsItemViewModels.Add(new ItemViewModel(item.Name, item.Number, item.DateOfFreezing));
+                observableCollection.Add(new ItemViewModel(item.Name, item.Number, item.DateOfFreezing));
             }
 
-            Results = resultsAsItemViewModels;
-            SelectedItem = Results.Count > 0 ? Results[0] : null;
+            return observableCollection;
         }
 
 
@@ -129,5 +173,9 @@ namespace FreezerOrganizer.ViewModel
 
         private void UpdateItem() { }
 
+        internal void SaveItems() 
+        {
+            itemRepository.SaveItems();
+        }
     }
 }

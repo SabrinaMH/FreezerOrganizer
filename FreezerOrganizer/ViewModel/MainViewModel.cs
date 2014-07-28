@@ -8,40 +8,34 @@ using FreezerOrganizer.Model;
 
 namespace FreezerOrganizer.ViewModel
 {
-    public class MainViewModel : CommonBase
+    public class MainViewModel : ViewModelBase
     {
-        private ICommand closeCommand;
-        private SearchViewModel resultsViewModel;
+        private ICommand closingCommand;
+        private SearchViewModel searchViewModel;
 
         public MainViewModel()
         {
-            resultsViewModel = new SearchViewModel();
+            searchViewModel = new SearchViewModel();
         }
 
-        public ICommand CloseCommand
+        public ICommand ClosingCommand
         {
             get
             {
-                if (closeCommand == null)
+                if (closingCommand == null)
                 {
-                    closeCommand = new RelayCommand(
-                        param => Close(),
+                    closingCommand = new RelayCommand(
+                        param => Closing(),
                         param => true
                         );
                 }
-                return closeCommand;
+                return closingCommand;
             }
         }
 
-        public void Load()
+        private void Closing()
         {
-            //AllItems = Services.LoadItems();
-            ItemRepository.LoadItems();
-        }
-
-        private void Close()
-        {
-            ItemRepository.SaveItems();
+            searchViewModel.SaveItems();
         }
     }
 }
