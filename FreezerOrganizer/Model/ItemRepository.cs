@@ -30,6 +30,11 @@ namespace FreezerOrganizer.Model
             items.Add(newItem);
         }
 
+        internal void Delete(Item item)
+        {
+            items.Remove(item);
+        }
+
         internal void Remove(string name, int number, DateTime dateOfFreezing)
         {
             var matchingItem = FindItem(name, number, dateOfFreezing);

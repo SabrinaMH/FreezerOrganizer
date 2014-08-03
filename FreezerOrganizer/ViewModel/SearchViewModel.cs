@@ -15,15 +15,13 @@ namespace FreezerOrganizer.ViewModel
     {
         private string input;
         private ObservableCollection<ItemViewModel> results;
-        private ItemRepository itemRepository;
         private ItemViewModel selectedItem;
         private ICommand searchCommand;
 
         public SearchViewModel() 
         {
             results = new ObservableCollection<ItemViewModel>();
-            itemRepository = new ItemRepository();
-            UpdateResults(itemRepository.GetAll());
+            UpdateResults(ItemViewModel.GetAll());
         }
 
         public string Input
@@ -70,7 +68,7 @@ namespace FreezerOrganizer.ViewModel
             {
                 foreach (ItemViewModel itemVM in e.NewItems)
                 {
-                    itemRepository.Add(new Item(itemVM.Name, itemVM.Number, itemVM.DateOfFreezing));
+                    itemVM.Add();
                     itemVM.PropertyChanged += itemViewModel_PropertyChanged;
                 }
             }
@@ -79,7 +77,7 @@ namespace FreezerOrganizer.ViewModel
             {
                 foreach (ItemViewModel itemVM in e.OldItems)
                 {
-                    itemRepository.Remove(itemVM.Name, itemVM.Number, itemVM.DateOfFreezing);
+                    itemVM.DeleteItem();
                     itemVM.PropertyChanged -= itemViewModel_PropertyChanged;
                 }
             }
@@ -87,11 +85,9 @@ namespace FreezerOrganizer.ViewModel
 
         private void itemViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            var itemVM = (ItemViewModel)sender; // sabrh: differs from selectedItem?
-            itemRepository.Update(itemVM.Name, itemVM.Number, itemVM.DateOfFreezing);
-            // sabrh: is sender the updated item, while this is the old?
-            // sabrh: shit. selectedItem is an itemviewmodel. No help in finding the item in the itemrepository list.
-        }
+            var itemVM = (ItemViewModel)sender; 
+            itemVM.UpdateItem();
+       }
 
         public ItemViewModel SelectedItem
         {
@@ -123,30 +119,19 @@ namespace FreezerOrganizer.ViewModel
 
         private void Search(string input)
         {
-            var resultsAsItems = itemRepository.Search(Input);
+            var resultsAsItems = ItemViewModel.Search(Input);
             UpdateResults(resultsAsItems);
         }
 
-        private void UpdateResults(List<Item> list)
+        private void UpdateResults(ObservableCollection<ItemViewModel> results)
         {
-            Results = ConvertToObservableCollection(list);
+            Results = results;
             SelectedItem = Results.Count > 0 ? Results[0] : null;
-        }
-
-        private ObservableCollection<ItemViewModel> ConvertToObservableCollection(List<Item> list)
-        {
-            var observableCollection = new ObservableCollection<ItemViewModel>();
-            foreach (Item item in list)
-            {
-                observableCollection.Add(new ItemViewModel(item.Name, item.Number, item.DateOfFreezing));
-            }
-
-            return observableCollection;
         }
 
         internal void SaveItems() 
         {
-            itemRepository.SaveItems();
+            ItemViewModel.SaveItems();
         }
     }
 }

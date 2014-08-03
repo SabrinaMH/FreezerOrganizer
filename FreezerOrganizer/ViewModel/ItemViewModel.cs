@@ -1,5 +1,7 @@
-﻿using System;
+﻿using FreezerOrganizer.Model;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,16 +14,35 @@ namespace FreezerOrganizer.ViewModel
         private string name;
         private int number;
         private DateTime dateOfFreezing;
+        private Item item;
         private ICommand deleteItemCommand;
         private ICommand updateItemCommand;
+        private static ItemRepository itemRepository = new ItemRepository();
 
-        public ItemViewModel() { } // public empty constructor needed for users to add rows to the datagrid.
+        public ItemViewModel() { }// public parameterless constructor needed for users to add rows to the datagrid.
 
-        public ItemViewModel(string name, int number, DateTime dateOfFreezing) 
+        public ItemViewModel(Item item) : this(item.Name, item.Number, item.DateOfFreezing)
+        {
+            this.item = item;
+        }
+
+        public ItemViewModel(string name, int number, DateTime dateOfFreezing)
         {
             this.name = name;
             this.number = number;
             this.dateOfFreezing = dateOfFreezing;
+        }
+
+        private Item Item // makes sure that item is never null
+        {
+            get
+            {
+                if (item == null)
+                {
+                    item = new Item(this.Name, this.Number, this.DateOfFreezing);
+                }
+                return item;
+            }
         }
 
         public string Name
@@ -82,34 +103,73 @@ namespace FreezerOrganizer.ViewModel
                 {
                     deleteItemCommand = new RelayCommand(
                         param => DeleteItem(),
-                        param => (SelectedItem != null)
+                        param => (true)
                         );
                 }
                 return deleteItemCommand;
             }
         }
 
-        private void DeleteItem()
+        internal void DeleteItem()
         {
-
+            itemRepository.Delete(this.Item);
         }
 
-        public ICommand UpdateItemNumberCommand
+        public ICommand UpdateCommand
         {
             get
             {
-                if (updateItemNumberCommand == null)
+                if (updateItemCommand == null)
                 {
-                    updateItemNumberCommand = new RelayCommand(
+                    updateItemCommand = new RelayCommand(
                         param => UpdateItem(),
-                        param => (SelectedItem != null)
+                        param => (true)
                         );
                 }
-                return updateItemNumberCommand;
+                return updateItemCommand;
             }
         }
 
-        private void UpdateItem() { }
+        internal void UpdateItem() 
+        {
+            if (this.Number == 0)
+            {
+                itemRepository.Delete(this.Item);
+            }
+            else
+            {
+                item.Update(name, number, dateOfFreezing);
+            }
+        }
+        
+        internal void Add()
+        {
+            itemRepository.Add(this.Item);
+        }
 
+        internal static ObservableCollection<ItemViewModel> GetAll()
+        {
+            return ConvertToObservableCollection(itemRepository.GetAll());
+        }
+
+        internal static ObservableCollection<ItemViewModel> Search(string input)
+        {
+            return ConvertToObservableCollection(itemRepository.Search(input));
+        }
+
+        internal static void SaveItems()
+        {
+            itemRepository.SaveItems();
+        }
+
+        internal static ObservableCollection<ItemViewModel> ConvertToObservableCollection(List<Item> itemList)
+        {
+            var observableCollection = new ObservableCollection<ItemViewModel>();
+            foreach (Item item in itemList)
+            {
+                observableCollection.Add(new ItemViewModel(item));
+            }
+            return observableCollection;
+        }
     }
 }
