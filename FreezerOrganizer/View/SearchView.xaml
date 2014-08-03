@@ -30,7 +30,6 @@
                 <DataGridTextColumn Header="Number" Binding="{Binding Number}"/>
                 <DataGridTextColumn Header="Freezing date" Binding="{Binding DateOfFreezing, StringFormat=\{0:dd.MM.yy\}}"/>
             </DataGrid.Columns>
-            <!-- todo: user is actually able to add rows to the grid. That could be the way to add new items -->
         </DataGrid>
     </Grid>
 </UserControl>

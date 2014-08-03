@@ -18,13 +18,12 @@ namespace FreezerOrganizer.ViewModel
         private ItemRepository itemRepository;
         private ItemViewModel selectedItem;
         private ICommand searchCommand;
-        private ICommand deleteItemCommand; // should perhaps be placed on ItemViewModel and merged with the method below.
-        private ICommand updateItemNumberCommand;
 
         public SearchViewModel() 
         {
+            results = new ObservableCollection<ItemViewModel>();
             itemRepository = new ItemRepository();
-            UpdateResultsAndSelectedItem(itemRepository.GetAll());
+            UpdateResults(itemRepository.GetAll());
         }
 
         public string Input
@@ -45,7 +44,7 @@ namespace FreezerOrganizer.ViewModel
         
         public ObservableCollection<ItemViewModel> Results
         {
-            get
+            private get
             {
                 return results;
             }
@@ -53,12 +52,19 @@ namespace FreezerOrganizer.ViewModel
             {
                 results = value;
                 results.CollectionChanged += results_CollectionChanged;
+                // the event subscriptions should also be updated, when the reference of the OC is changed.
+                UpdateEventSubscriptions(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, results)); 
                 OnPropertyChanged("Results");
             }
         }
 
         // gets called whenever items are added/removed from the list, as the collection is then changed.
         private void results_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            UpdateEventSubscriptions(e);
+        }
+
+        private void UpdateEventSubscriptions(NotifyCollectionChangedEventArgs e)
         {
             if (e.NewItems != null)
             {
@@ -81,7 +87,10 @@ namespace FreezerOrganizer.ViewModel
 
         private void itemViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("in propertyChanged");
+            var itemVM = (ItemViewModel)sender; // sabrh: differs from selectedItem?
+            itemRepository.Update(itemVM.Name, itemVM.Number, itemVM.DateOfFreezing);
+            // sabrh: is sender the updated item, while this is the old?
+            // sabrh: shit. selectedItem is an itemviewmodel. No help in finding the item in the itemrepository list.
         }
 
         public ItemViewModel SelectedItem
@@ -115,10 +124,10 @@ namespace FreezerOrganizer.ViewModel
         private void Search(string input)
         {
             var resultsAsItems = itemRepository.Search(Input);
-            UpdateResultsAndSelectedItem(resultsAsItems);
+            UpdateResults(resultsAsItems);
         }
 
-        private void UpdateResultsAndSelectedItem(List<Item> list)
+        private void UpdateResults(List<Item> list)
         {
             Results = ConvertToObservableCollection(list);
             SelectedItem = Results.Count > 0 ? Results[0] : null;
@@ -134,44 +143,6 @@ namespace FreezerOrganizer.ViewModel
 
             return observableCollection;
         }
-
-
-        public ICommand DeleteItemCommand
-        {
-            get
-            {
-                if (deleteItemCommand == null)
-                {
-                    deleteItemCommand = new RelayCommand(
-                        param => DeleteItem(),
-                        param => (SelectedItem != null)
-                        );
-                }
-                return deleteItemCommand;
-            }
-        }
-
-        private void DeleteItem() 
-        {
- 
-        }
-
-        public ICommand UpdateItemNumberCommand
-        {
-            get
-            {
-                if (updateItemNumberCommand == null)
-                {
-                    updateItemNumberCommand = new RelayCommand(
-                        param => UpdateItem(),
-                        param => (SelectedItem != null)
-                        );
-                }
-                return updateItemNumberCommand;
-            }
-        }
-
-        private void UpdateItem() { }
 
         internal void SaveItems() 
         {

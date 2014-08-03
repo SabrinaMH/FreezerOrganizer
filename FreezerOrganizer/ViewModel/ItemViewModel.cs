@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace FreezerOrganizer.ViewModel
 {
@@ -11,8 +12,10 @@ namespace FreezerOrganizer.ViewModel
         private string name;
         private int number;
         private DateTime dateOfFreezing;
+        private ICommand deleteItemCommand;
+        private ICommand updateItemCommand;
 
-        public ItemViewModel() { } // Empty constructor needed for users to add rows to the datagrid.
+        public ItemViewModel() { } // public empty constructor needed for users to add rows to the datagrid.
 
         public ItemViewModel(string name, int number, DateTime dateOfFreezing) 
         {
@@ -68,5 +71,45 @@ namespace FreezerOrganizer.ViewModel
                 }
             }
         }
+
+
+
+        public ICommand DeleteItemCommand
+        {
+            get
+            {
+                if (deleteItemCommand == null)
+                {
+                    deleteItemCommand = new RelayCommand(
+                        param => DeleteItem(),
+                        param => (SelectedItem != null)
+                        );
+                }
+                return deleteItemCommand;
+            }
+        }
+
+        private void DeleteItem()
+        {
+
+        }
+
+        public ICommand UpdateItemNumberCommand
+        {
+            get
+            {
+                if (updateItemNumberCommand == null)
+                {
+                    updateItemNumberCommand = new RelayCommand(
+                        param => UpdateItem(),
+                        param => (SelectedItem != null)
+                        );
+                }
+                return updateItemNumberCommand;
+            }
+        }
+
+        private void UpdateItem() { }
+
     }
 }

@@ -12,19 +12,16 @@ namespace FreezerOrganizer.Model
     {
         private static List<Item> items = new List<Item>();
 
-        public ItemRepository()
-        {
-
-        }
+        public ItemRepository() { }
 
         internal void SaveItems()
         {
-            Serialization.SaveItems(items);
+            Serialization.SerializeObject<Item>(items);
         }
 
         internal List<Item> GetAll()
         {
-            items = Serialization.LoadItems();
+            items = Serialization.DeserializeObject<Item>();
             return items;
         }
 
@@ -35,11 +32,21 @@ namespace FreezerOrganizer.Model
 
         internal void Remove(string name, int number, DateTime dateOfFreezing)
         {
-            var matchingItem = items.Find(item => item.Name == name && item.Number == number && item.DateOfFreezing == dateOfFreezing);
+            var matchingItem = FindItem(name, number, dateOfFreezing);
             if (matchingItem != null)
             {
                 items.Remove(matchingItem);
             }
+        }
+
+        internal void Update(string name, int number, DateTime dateOfFreezing)
+        {
+            //itemToUpdate.Update(name, number, dateOfFreezing);
+        }
+
+        private Item FindItem(string name, int number, DateTime dateOfFreezing)
+        {
+            return items.Find(item => item.IsMatch(name, number, dateOfFreezing));
         }
 
         internal List<Item> Search(string input)

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FreezerOrganizer.Model;
-using System.Xml.Serialization;
+using System.Runtime.Serialization;
 
 namespace FreezerOrganizer.Data
 {
@@ -13,27 +13,30 @@ namespace FreezerOrganizer.Data
     {
         private const string fileName = "SavedItems.xml";
 
-        internal static List<Item> LoadItems()
+        internal static List<T> DeserializeObject<T>() 
+            where T : class
         {
-            var deserializedItems = new List<Item>();
+            List<T> deserializedObj = null;
+
             if (File.Exists(fileName))
             {
-                using (StreamReader fileStream = new StreamReader(fileName))
+                using (var fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
                 {
-                    XmlSerializer deserializer = new XmlSerializer(typeof(List<Item>));
-                    deserializedItems = (List<Item>)deserializer.Deserialize(fileStream);
+                    var serializer = new DataContractSerializer(typeof(List<T>));
+                    deserializedObj = (List<T>)serializer.ReadObject(fileStream);
                 }
             }
-            return new List<Item>() { new Item("test", 2, DateTime.Now) };
-            // return deserializedItems; todo test
+
+            return deserializedObj;
         }
 
-        internal static void SaveItems(List<Item> items)
+        internal static void SerializeObject<T>(List<T> objectToSerialize) 
+            where T : class
         {
-            using (StreamWriter fileStream = new StreamWriter(fileName))
+            using (var fileStream = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.Write))
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(List<Item>));
-                serializer.Serialize(fileStream, items);
+                var serializer = new DataContractSerializer(typeof(List<T>));
+                serializer.WriteObject(fileStream, objectToSerialize);
             }
         }
     }
