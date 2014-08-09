@@ -37,5 +37,7 @@ namespace FreezerOrganizer.Model
         {
             return this.Name == name && this.Number == number && this.DateOfFreezing == dateOfFreezing;
         }
+
+        internal void CreateItem
     }
 }

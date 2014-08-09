@@ -64,21 +64,20 @@ namespace FreezerOrganizer.ViewModel
 
         private void UpdateEventSubscriptions(NotifyCollectionChangedEventArgs e)
         {
-            if (e.NewItems != null)
+            if (e.NewItems != null) // action == add
             {
                 foreach (ItemViewModel itemVM in e.NewItems)
                 {
-                    itemVM.Add();
                     itemVM.PropertyChanged += itemViewModel_PropertyChanged;
                 }
             }
 
-            if (e.OldItems != null)
+            if (e.OldItems != null) // action == delete
             {
                 foreach (ItemViewModel itemVM in e.OldItems)
                 {
-                    itemVM.DeleteItem();
                     itemVM.PropertyChanged -= itemViewModel_PropertyChanged;
+                    itemVM.DeleteItem();
                 }
             }
         }
@@ -126,7 +125,7 @@ namespace FreezerOrganizer.ViewModel
         private void UpdateResults(ObservableCollection<ItemViewModel> results)
         {
             Results = results;
-            SelectedItem = Results.Count > 0 ? Results[0] : null;
+            SelectedItem = results.Count > 0 ? results[0] : null;
         }
 
         internal void SaveItems() 

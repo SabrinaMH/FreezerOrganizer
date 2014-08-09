@@ -16,7 +16,7 @@ namespace FreezerOrganizer.Data
         internal static List<T> DeserializeObject<T>() 
             where T : class
         {
-            List<T> deserializedObj = null;
+            var deserializedObj = new List<T>();
 
             if (File.Exists(fileName))
             {
@@ -33,7 +33,8 @@ namespace FreezerOrganizer.Data
         internal static void SerializeObject<T>(List<T> objectToSerialize) 
             where T : class
         {
-            using (var fileStream = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.Write))
+            // FileMode.Create overwrites file if it already exists
+            using (var fileStream = new FileStream(fileName, FileMode.Create, FileAccess.Write))
             {
                 var serializer = new DataContractSerializer(typeof(List<T>));
                 serializer.WriteObject(fileStream, objectToSerialize);

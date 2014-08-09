@@ -18,19 +18,25 @@ namespace FreezerOrganizer.ViewModel
         private ICommand deleteItemCommand;
         private ICommand updateItemCommand;
         private static ItemRepository itemRepository = new ItemRepository();
+        private static List<ItemViewModel> itemVMRespository = new List<ItemViewModel>();
 
-        public ItemViewModel() { }// public parameterless constructor needed for users to add rows to the datagrid.
-
-        public ItemViewModel(Item item) : this(item.Name, item.Number, item.DateOfFreezing)
+        public ItemViewModel() // public parameterless constructor needed for users to add rows to the datagrid.
         {
-            this.item = item;
+            itemVMRespository.Add(this);
         }
 
         public ItemViewModel(string name, int number, DateTime dateOfFreezing)
+            : this()
         {
             this.name = name;
             this.number = number;
             this.dateOfFreezing = dateOfFreezing;
+        }
+
+        public ItemViewModel(Item item) 
+            : this(item.Name, item.Number, item.DateOfFreezing)
+        {
+            this.item = item;
         }
 
         private Item Item // makes sure that item is never null
@@ -132,19 +138,12 @@ namespace FreezerOrganizer.ViewModel
 
         internal void UpdateItem() 
         {
-            if (this.Number == 0)
-            {
-                itemRepository.Delete(this.Item);
-            }
-            else
-            {
-                item.Update(name, number, dateOfFreezing);
-            }
+            Item.Update(name, number, dateOfFreezing);
         }
-        
-        internal void Add()
+
+        internal static bool Exists(ItemViewModel itemVM)
         {
-            itemRepository.Add(this.Item);
+            return itemVMRespository.Contains(itemVM);
         }
 
         internal static ObservableCollection<ItemViewModel> GetAll()
