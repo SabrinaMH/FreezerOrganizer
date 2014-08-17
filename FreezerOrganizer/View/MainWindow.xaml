@@ -3,18 +3,51 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
-        xmlns:view="clr-namespace:FreezerOrganizer.View"
-        xmlns:viewModel="clr-namespace:FreezerOrganizer.ViewModel"
-        Title="Freezer Organizer">
-    <Window.DataContext>
-        <viewModel:MainViewModel/>
-    </Window.DataContext>
+        xmlns:converters="clr-namespace:FreezerOrganizer.View.Converters"
+        Title="Freezer Organizer"
+        Loaded="Window_Loaded">
+    <Window.InputBindings>
+        <KeyBinding Key="S" 
+                    Modifiers="Control" 
+                    Command="{Binding SearchCommand}" />
+    </Window.InputBindings>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closing">
-            <i:InvokeCommandAction Command="{Binding ClosingCommand}"/>
+            <i:InvokeCommandAction Command="{Binding ClosingCommand}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    <Grid>
-        <view:SearchView/>
-    </Grid>
+    <UserControl>
+        <UserControl.Resources>
+            <converters:IgnoreNewItemPlaceholderConverter x:Key="ignoreNewItemPlaceholderConverter" />
+        </UserControl.Resources>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBox Text="{Binding Input, UpdateSourceTrigger=PropertyChanged}" Name="input_TextBox" Margin="0,0,0,20" Grid.Row="0" Grid.Column="0" Width="100">
+                <TextBox.InputBindings>
+                    <KeyBinding Command="{Binding SearchCommand}" Key="Enter" />
+                </TextBox.InputBindings>
+            </TextBox>
+            <Button Command="{Binding SearchCommand}" Margin="30,0,0,20" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Content="Search" Width="100" />
+            <DataGrid ItemsSource="{Binding Results, Mode=TwoWay}" 
+                      SelectedItem="{Binding SelectedItem, Converter={StaticResource ignoreNewItemPlaceholderConverter}}"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="True"
+                      Grid.Row="1" Grid.ColumnSpan="2">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
+                    <DataGridTextColumn Header="Number" Binding="{Binding Number}" />
+                    <DataGridTextColumn Header="Date" Binding="{Binding DateOfFreezing, StringFormat='dd.MM.yy'}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </UserControl>
 </Window>
+    
+     

@@ -7,56 +7,57 @@ using FreezerOrganizer.Data;
 
 namespace FreezerOrganizer.Model
 {
-    // Provides mechanism to interact with storage.
-    class ItemRepository
+    // provides mechanism to interact with storage.
+    public class ItemRepository
     {
-        private static List<Item> items = new List<Item>();
+        private List<Item> _items = new List<Item>();
 
         public ItemRepository() { }
 
-        internal void SaveItems()
+        internal void Save()
         {
-            Serialization.SerializeObject<Item>(items);
+            var duplicateItems = new List<Item>();
+            // Check for duplicates. Shouldn't be done in SerializeList, as this should be kept generic.
+            foreach (var item in _items)
+            {
+                if (!duplicateItems.Contains(item))
+                {
+                    // otherItem != item, as the list shouldn't contain the item itself
+                    var identicalItems = _items.FindAll(otherItem => otherItem != item && otherItem.Name == item.Name && otherItem.DateOfFreezing.Date == item.DateOfFreezing.Date);
+                    foreach (var identicalItem in identicalItems)
+                    {
+                        item.UpdateNumber(item.Number + identicalItem.Number);
+                        duplicateItems.Add(identicalItem);
+                    }
+                }
+            }
+
+            _items = _items.Except(duplicateItems).ToList<Item>();
+
+            Serialization.SerializeList<Item>(_items);
         }
 
-        internal List<Item> GetAll()
+        internal List<Item> Load(string path)
         {
-            items = Serialization.DeserializeObject<Item>();
-            return items;
+            _items = Serialization.DeserializeList<Item>(path);
+            return _items;
         }
 
-        internal void Add(Item newItem)
+        internal Item CreateNewItem()
         {
-            items.Add(newItem);
+            var item = new Item("", 0, DateTime.Now);
+            _items.Add(item);
+            return item;
         }
 
         internal void Delete(Item item)
         {
-            items.Remove(item);
-        }
-
-        internal void Remove(string name, int number, DateTime dateOfFreezing)
-        {
-            var matchingItem = FindItem(name, number, dateOfFreezing);
-            if (matchingItem != null)
-            {
-                items.Remove(matchingItem);
-            }
-        }
-
-        internal void Update(string name, int number, DateTime dateOfFreezing)
-        {
-            //itemToUpdate.Update(name, number, dateOfFreezing);
-        }
-
-        private Item FindItem(string name, int number, DateTime dateOfFreezing)
-        {
-            return items.Find(item => item.IsMatch(name, number, dateOfFreezing));
+            _items.Remove(item);
         }
 
         internal List<Item> Search(string input)
         {
-            return items.FindAll(item => Contains(item.Name, input, StringComparison.OrdinalIgnoreCase));
+            return _items.FindAll(item => Contains(item.Name, input, StringComparison.OrdinalIgnoreCase));
         }
 
         // case insensitive search among the item names.

@@ -11,33 +11,34 @@ namespace FreezerOrganizer.Data
 {
     static class Serialization
     {
-        private const string fileName = "SavedItems.xml";
+        private static string _path;
 
-        internal static List<T> DeserializeObject<T>() 
+        internal static List<T> DeserializeList<T>(string path) 
             where T : class
         {
-            var deserializedObj = new List<T>();
+            _path = path; // such that objects will be serialized to the same file.
+            var deserializedList = new List<T>();
 
-            if (File.Exists(fileName))
+            if (File.Exists(path))
             {
-                using (var fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+                using (var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read))
                 {
                     var serializer = new DataContractSerializer(typeof(List<T>));
-                    deserializedObj = (List<T>)serializer.ReadObject(fileStream);
+                    deserializedList = (List<T>)serializer.ReadObject(fileStream);
                 }
             }
 
-            return deserializedObj;
+            return deserializedList;
         }
 
-        internal static void SerializeObject<T>(List<T> objectToSerialize) 
+        internal static void SerializeList<T>(List<T> listToSerialize) 
             where T : class
         {
             // FileMode.Create overwrites file if it already exists
-            using (var fileStream = new FileStream(fileName, FileMode.Create, FileAccess.Write))
+            using (var fileStream = new FileStream(_path, FileMode.Create, FileAccess.Write))
             {
                 var serializer = new DataContractSerializer(typeof(List<T>));
-                serializer.WriteObject(fileStream, objectToSerialize);
+                serializer.WriteObject(fileStream, listToSerialize);
             }
         }
     }

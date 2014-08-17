@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using FreezerOrganizer.ViewModel;
 
 namespace FreezerOrganizer.View
 {
@@ -20,9 +21,15 @@ namespace FreezerOrganizer.View
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        public MainWindow(string path)
         {
             InitializeComponent();
+            DataContext = new MainViewModel(path);
+        }
+
+        private void Window_Loaded(object sender, EventArgs e)
+        {
+            input_TextBox.Focus();
         }
     }
 }

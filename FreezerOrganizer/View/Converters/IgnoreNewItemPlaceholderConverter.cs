@@ -11,7 +11,7 @@ namespace FreezerOrganizer.View.Converters
     // fixes bug in datagrid when adding a new row
     public class IgnoreNewItemPlaceholderConverter : IValueConverter
     {
-        private const string newItemPlaceholderName = "{NewItemPlaceholder}";
+        private const string _newItemPlaceholderName = "{NewItemPlaceholder}";
 
         public IgnoreNewItemPlaceholderConverter() { }
 
@@ -22,7 +22,7 @@ namespace FreezerOrganizer.View.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (value!= null && value.ToString() == newItemPlaceholderName)
+            if (value!= null && value.ToString() == _newItemPlaceholderName)
             {
                 value = DependencyProperty.UnsetValue;
             }

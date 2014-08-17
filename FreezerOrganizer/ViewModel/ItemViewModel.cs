@@ -11,57 +11,42 @@ namespace FreezerOrganizer.ViewModel
 {
     public class ItemViewModel : ViewModelBase
     {
-        private string name;
-        private int number;
-        private DateTime dateOfFreezing;
-        private Item item;
-        private ICommand deleteItemCommand;
-        private ICommand updateItemCommand;
-        private static ItemRepository itemRepository = new ItemRepository();
-        private static List<ItemViewModel> itemVMRespository = new List<ItemViewModel>();
+        private Item _item = null;
+        private static ItemRepository _itemRepository;
 
         public ItemViewModel() // public parameterless constructor needed for users to add rows to the datagrid.
-        {
-            itemVMRespository.Add(this);
-        }
-
-        public ItemViewModel(string name, int number, DateTime dateOfFreezing)
-            : this()
-        {
-            this.name = name;
-            this.number = number;
-            this.dateOfFreezing = dateOfFreezing;
-        }
+        { }
 
         public ItemViewModel(Item item) 
-            : this(item.Name, item.Number, item.DateOfFreezing)
         {
-            this.item = item;
+            this._item = item;
         }
 
-        private Item Item // makes sure that item is never null
+        public static void SetRepository(ItemRepository itemRepository)
+        {
+            _itemRepository = itemRepository;
+        }
+
+        public Item Item // make sure that item is never null
         {
             get
             {
-                if (item == null)
+                if (_item == null)
                 {
-                    item = new Item(this.Name, this.Number, this.DateOfFreezing);
+                    _item = _itemRepository.CreateNewItem();
                 }
-                return item;
+                return _item;
             }
         }
 
         public string Name
         {
-            get
-            {
-                return name;
-            }
+            get { return Item.Name; }
             set
             {
-                if (name != value)
+                if (Item.Name != value)
                 {
-                    name = value;
+                    Item.Name = value;
                     OnPropertyChanged("Name");
                 }
             }
@@ -69,106 +54,40 @@ namespace FreezerOrganizer.ViewModel
 
         public int Number
         {
-            get
-            {
-                return number;
-            }
+            get { return Item.Number; }
             set
             {
-                if (number != value)
+                if (Item.Number != value)
                 {
-                    number = value;
-                    OnPropertyChanged("Number");
+                    if (value == 0)
+                    {
+                        DeleteItem();
+                    }
+                    else
+                    {
+                        Item.UpdateNumber(value);
+                        OnPropertyChanged("Number");
+                    }
                 }
             }
         }
 
         public DateTime DateOfFreezing
         {
-            get
-            {
-                return dateOfFreezing;
-            }
+            get { return Item.DateOfFreezing; }
             set
             {
-                if (dateOfFreezing != value)
+                if (Item.DateOfFreezing != value)
                 {
-                    dateOfFreezing = value;
+                    Item.DateOfFreezing = value;
                     OnPropertyChanged("DateOfFreezing");
                 }
             }
         }
 
-
-
-        public ICommand DeleteItemCommand
-        {
-            get
-            {
-                if (deleteItemCommand == null)
-                {
-                    deleteItemCommand = new RelayCommand(
-                        param => DeleteItem(),
-                        param => (true)
-                        );
-                }
-                return deleteItemCommand;
-            }
-        }
-
         internal void DeleteItem()
         {
-            itemRepository.Delete(this.Item);
-        }
-
-        public ICommand UpdateCommand
-        {
-            get
-            {
-                if (updateItemCommand == null)
-                {
-                    updateItemCommand = new RelayCommand(
-                        param => UpdateItem(),
-                        param => (true)
-                        );
-                }
-                return updateItemCommand;
-            }
-        }
-
-        internal void UpdateItem() 
-        {
-            Item.Update(name, number, dateOfFreezing);
-        }
-
-        internal static bool Exists(ItemViewModel itemVM)
-        {
-            return itemVMRespository.Contains(itemVM);
-        }
-
-        internal static ObservableCollection<ItemViewModel> GetAll()
-        {
-            return ConvertToObservableCollection(itemRepository.GetAll());
-        }
-
-        internal static ObservableCollection<ItemViewModel> Search(string input)
-        {
-            return ConvertToObservableCollection(itemRepository.Search(input));
-        }
-
-        internal static void SaveItems()
-        {
-            itemRepository.SaveItems();
-        }
-
-        internal static ObservableCollection<ItemViewModel> ConvertToObservableCollection(List<Item> itemList)
-        {
-            var observableCollection = new ObservableCollection<ItemViewModel>();
-            foreach (Item item in itemList)
-            {
-                observableCollection.Add(new ItemViewModel(item));
-            }
-            return observableCollection;
+            _itemRepository.Delete(this.Item);
         }
     }
 }
