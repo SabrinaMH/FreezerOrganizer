@@ -17,6 +17,7 @@ namespace FreezerOrganizer.ViewModel
         private ObservableCollection<ItemViewModel> _results;
         private ItemViewModel _selectedItem;
         private ItemRepository _itemRepository;
+        private SettingsViewModel _settingsViewModel;
         private ICommand _searchCommand;
         private ICommand _closingCommand;
 
@@ -26,6 +27,16 @@ namespace FreezerOrganizer.ViewModel
             Results = ConvertToObservableCollection(_itemRepository.Load(path));
             SelectedItem = Results.Count > 0 ? Results[0] : null;
             ItemViewModel.SetRepository(_itemRepository);
+            _settingsViewModel = new SettingsViewModel();
+            
+        }
+
+        public SettingsViewModel SettingsViewModel
+        {
+            get
+            {
+                return _settingsViewModel;
+            }
         }
 
         public string Input
@@ -128,6 +139,7 @@ namespace FreezerOrganizer.ViewModel
         private void Closing()
         {
             _itemRepository.Save();
+            SettingsViewModel.Save();
         }
     }
 }

@@ -54,7 +54,7 @@
                     <DataGridTextColumn Header="Date" Binding="{Binding DateOfFreezing, StringFormat='dd.MM.yy'}" />
                 </DataGrid.Columns>
             </DataGrid>
-            <local:SettingsView Grid.Row="2" Grid.ColumnSpan="4" />
+            <local:SettingsView DataContext="{Binding SettingsViewModel}" Grid.Row="2" Grid.ColumnSpan="4" />
         </Grid>
     </UserControl>
 </Window>

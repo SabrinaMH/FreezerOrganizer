@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FreezerOrganizer.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,10 +8,16 @@ using System.Windows.Input;
 
 namespace FreezerOrganizer.ViewModel
 {
-    class SettingsViewModel : ViewModelBase
+    public class SettingsViewModel : ViewModelBase
     {
         private string _fileName;
         private ICommand _openFileDialog;
+        private Settings _settings;
+
+        public SettingsViewModel() 
+        {
+            _settings = new Settings();
+        }
 
         public ICommand OpenFileDialog
         {
@@ -19,7 +26,7 @@ namespace FreezerOrganizer.ViewModel
                 if (_openFileDialog == null)
                 {
                     _openFileDialog = new RelayCommand(
-                        param => OpenFileDialog(),
+                        param => ShowFileDialog(),
                         param => true // todo: necessary??
                         );
                 }
@@ -27,10 +34,10 @@ namespace FreezerOrganizer.ViewModel
             }
         }
 
-        private void OpenFileDialog()
+        private void ShowFileDialog()
         {
             Microsoft.Win32.OpenFileDialog fileDialog = new Microsoft.Win32.OpenFileDialog();
-            fileDialog.DefaultExt = ".xml";
+            fileDialog.Filter = "XML files (*.xml)|*.xml";
             bool? isFileSelected = fileDialog.ShowDialog();
 
             if (isFileSelected == true)
@@ -50,6 +57,11 @@ namespace FreezerOrganizer.ViewModel
                     OnPropertyChanged("FileName");
                 }
             }
+        }
+
+        internal void Save()
+        {
+            _settings.Save();
         }
     }
 }
