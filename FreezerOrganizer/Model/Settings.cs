@@ -8,13 +8,13 @@ namespace FreezerOrganizer.Model
 {
     class Settings : ISettings
     {
-        internal object this[string propertyName]
+        public object this[string propertyName]
         {
             get 
             {
                 return Properties.Settings.Default[propertyName]; 
             }
-            private set 
+            set 
             { 
                 Properties.Settings.Default[propertyName] = value; 
             }
