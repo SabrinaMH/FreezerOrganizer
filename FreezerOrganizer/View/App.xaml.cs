@@ -15,8 +15,6 @@ namespace FreezerOrganizer.View
     /// </summary>
     public partial class App : Application
     {
-        private const string path = "SavedItems.xml";
-
         static App()
         {
             // Ensure the current culture passed into bindings is the OS culture.
@@ -30,7 +28,7 @@ namespace FreezerOrganizer.View
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            MainWindow mainWindow = new MainWindow(path);
+            MainWindow mainWindow = new MainWindow();
             mainWindow.Show();
         }
     }

@@ -10,7 +10,6 @@ namespace FreezerOrganizer.ViewModel
 {
     public class SettingsViewModel : ViewModelBase
     {
-        private string _fileName;
         private ICommand _openFileDialog;
         private Settings _settings;
 
@@ -42,19 +41,19 @@ namespace FreezerOrganizer.ViewModel
 
             if (isFileSelected == true)
             {
-                FileName = fileDialog.FileName;
+                Path = fileDialog.FileName;
             }
         }
 
-        public string FileName
+        public string Path
         {
-            get { return _fileName; }
-            set 
+            get { return _settings["Path"] as string; }
+            set
             {
-                if (_fileName != value)
+                if ((_settings["Path"] as string) != value)
                 {
-                    _fileName = value;
-                    OnPropertyChanged("FileName");
+                    _settings["Path"] = value;
+                    OnPropertyChanged("Path");
                 }
             }
         }

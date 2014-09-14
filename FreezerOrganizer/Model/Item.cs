@@ -14,27 +14,33 @@ namespace FreezerOrganizer.Model
         [DataMember()]
         public string Name { get; set; }
         [DataMember()]
-        public int Number { get; private set; }
+        public double Number { get; private set; }
         [DataMember()]
         public DateTime DateOfFreezing { get; set; }
 
         private Item() { }
 
-        public Item(string name, int number, DateTime dateOfFreezing)
+        public Item(string name, double number, DateTime dateOfFreezing)
         {
             this.Name = name;
             this.Number = number;
             this.DateOfFreezing = dateOfFreezing.Date;
         }
 
-        internal bool IsMatch(string name, int number, DateTime dateOfFreezing)
+        internal bool Equals(string name, double number, DateTime dateOfFreezing)
         {
             // not interested in the specific time, only the date.
             return this.Name == name && this.Number == number && this.DateOfFreezing == dateOfFreezing;
         }
 
+        internal bool Equals(Item item)
+        {
+            bool sameDate = item.DateOfFreezing.Month == this.DateOfFreezing.Month && item.DateOfFreezing.Year == this.DateOfFreezing.Year;
+            return item.Name == this.Name && sameDate;
+        }
+
         // created an update method, because it's used several places (extra benefit: enables private setter)
-        internal void UpdateNumber(int newNumber)
+        internal void UpdateNumber(double newNumber)
         {
             Number = newNumber;
         }

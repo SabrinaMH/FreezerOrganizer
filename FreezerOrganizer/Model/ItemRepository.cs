@@ -14,7 +14,7 @@ namespace FreezerOrganizer.Model
 
         public ItemRepository() { }
 
-        internal void Save()
+        internal void Save(string path)
         {
             var duplicateItems = new List<Item>();
             // Check for duplicates. Shouldn't be done in SerializeList, as this should be kept generic.
@@ -23,7 +23,7 @@ namespace FreezerOrganizer.Model
                 if (!duplicateItems.Contains(item))
                 {
                     // otherItem != item, as the list shouldn't contain the item itself
-                    var identicalItems = _items.FindAll(otherItem => otherItem != item && otherItem.Name == item.Name && otherItem.DateOfFreezing.Date == item.DateOfFreezing.Date);
+                    var identicalItems = _items.FindAll(otherItem => otherItem != item && item.Equals(otherItem));
                     foreach (var identicalItem in identicalItems)
                     {
                         item.UpdateNumber(item.Number + identicalItem.Number);
@@ -34,7 +34,7 @@ namespace FreezerOrganizer.Model
 
             _items = _items.Except(duplicateItems).ToList<Item>();
 
-            Serialization.SerializeList<Item>(_items);
+            Serialization.SerializeList<Item>(_items, path);
         }
 
         internal List<Item> Load(string path)

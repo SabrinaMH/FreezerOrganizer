@@ -52,7 +52,7 @@ namespace FreezerOrganizer.ViewModel
             }
         }
 
-        public int Number
+        public double Number
         {
             get { return Item.Number; }
             set
