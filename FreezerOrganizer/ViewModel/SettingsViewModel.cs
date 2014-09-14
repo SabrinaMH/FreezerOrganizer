@@ -24,10 +24,7 @@ namespace FreezerOrganizer.ViewModel
             {
                 if (_openFileDialog == null)
                 {
-                    _openFileDialog = new RelayCommand(
-                        param => ShowFileDialog(),
-                        param => true // todo: necessary??
-                        );
+                    _openFileDialog = new RelayCommand(param => ShowFileDialog());
                 }
                 return _openFileDialog;
             }

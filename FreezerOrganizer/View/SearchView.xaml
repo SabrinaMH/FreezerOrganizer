@@ -3,9 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:viewModel="clr-namespace:FreezerOrganizer.ViewModel"
              xmlns:converters="clr-namespace:FreezerOrganizer.View.Converters"
+             xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              Loaded="UserControl_Loaded">
     <UserControl.Resources>
         <converters:IgnoreNewItemPlaceholderConverter x:Key="ignoreNewItemPlaceholderConverter" />
+        <CollectionViewSource x:Key="Results" Source="{Binding Results}">
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="Name"/>
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
         <Style TargetType="{x:Type DataGridCell}">
             <Setter Property="Template">
                 <Setter.Value>
@@ -39,12 +45,21 @@
         <Button Command="{Binding SearchCommand}" 
                 Margin="30,0,0,20" Grid.Row="0" Grid.Column="1"
                 HorizontalAlignment="Left" Content="Search" Width="100" />
-        <DataGrid ItemsSource="{Binding Results, Mode=TwoWay}" 
+        <DataGrid ItemsSource="{Binding Source={StaticResource Results}}"
                   SelectedItem="{Binding SelectedItem, Converter={StaticResource ignoreNewItemPlaceholderConverter}}"
                   AutoGenerateColumns="False"
                   CanUserAddRows="True"
                   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                   Grid.Row="1" Grid.ColumnSpan="4">
+            <DataGrid.CellStyle> <!-- if not included, the selected rows content disappears -->
+                <Style TargetType="DataGridCell">
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected"
+                        Value="True">
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.CellStyle>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="Auto" />
                 <DataGridTextColumn Header="Number" Binding="{Binding Number}" />

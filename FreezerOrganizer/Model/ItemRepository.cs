@@ -32,7 +32,7 @@ namespace FreezerOrganizer.Model
                 }
             }
 
-            _items = _items.Except(duplicateItems).ToList<Item>();
+            _items = _items.Except(duplicateItems).OrderBy(item => item.Name).ToList();
 
             Serialization.SerializeList<Item>(_items, path);
         }
