@@ -4,10 +4,11 @@
              xmlns:viewModel="clr-namespace:FreezerOrganizer.ViewModel"
              xmlns:converters="clr-namespace:FreezerOrganizer.View.Converters"
              xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             xmlns:global="clr-namespace:System.Globalization;assembly=mscorlib"
              Loaded="UserControl_Loaded">
     <UserControl.Resources>
         <converters:IgnoreNewItemPlaceholderConverter x:Key="ignoreNewItemPlaceholderConverter" />
-        <CollectionViewSource x:Key="Results" Source="{Binding Results}">
+        <CollectionViewSource x:Key="SortedResults" Source="{Binding Results}" Culture="{x:Static global:CultureInfo.CurrentCulture}">
             <CollectionViewSource.SortDescriptions>
                 <scm:SortDescription PropertyName="Name"/>
             </CollectionViewSource.SortDescriptions>
@@ -45,18 +46,16 @@
         <Button Command="{Binding SearchCommand}" 
                 Margin="30,0,0,20" Grid.Row="0" Grid.Column="1"
                 HorizontalAlignment="Left" Content="Search" Width="100" />
-        <DataGrid ItemsSource="{Binding Source={StaticResource Results}}"
+        <DataGrid ItemsSource="{Binding Source={StaticResource SortedResults}}"
                   SelectedItem="{Binding SelectedItem, Converter={StaticResource ignoreNewItemPlaceholderConverter}}"
                   AutoGenerateColumns="False"
                   CanUserAddRows="True"
                   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                   Grid.Row="1" Grid.ColumnSpan="4">
-            <DataGrid.CellStyle> <!-- if not included, the selected rows content disappears -->
+            <DataGrid.CellStyle> <!-- if not included, the selected rows content disappears (todo: figure out why. Has to do with l. 16-26) -->
                 <Style TargetType="DataGridCell">
                     <Style.Triggers>
-                        <Trigger Property="IsSelected"
-                        Value="True">
-                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True" />
                     </Style.Triggers>
                 </Style>
             </DataGrid.CellStyle>

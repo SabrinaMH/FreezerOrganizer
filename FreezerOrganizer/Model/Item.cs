@@ -27,12 +27,6 @@ namespace FreezerOrganizer.Model
             this.DateOfFreezing = dateOfFreezing.Date;
         }
 
-        internal bool Equals(string name, double number, DateTime dateOfFreezing)
-        {
-            // not interested in the specific time, only the date.
-            return this.Name == name && this.Number == number && this.DateOfFreezing == dateOfFreezing;
-        }
-
         internal bool Equals(Item item)
         {
             bool sameDate = item.DateOfFreezing.Month == this.DateOfFreezing.Month && item.DateOfFreezing.Year == this.DateOfFreezing.Year;

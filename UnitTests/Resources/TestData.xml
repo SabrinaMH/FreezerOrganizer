@@ -1,0 +1,18 @@
+<ArrayOfItem xmlns="http://schemas.datacontract.org/2004/07/FreezerOrganizer.Model" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+  <Item>
+    <DateOfFreezing>2014-09-07T00:00:00+02:00</DateOfFreezing>
+    <Name>chokolade cookie</Name>
+    <Number>10</Number>
+  </Item>
+  <Item>
+    <DateOfFreezing>2014-08-07T00:00:00+02:00</DateOfFreezing>
+    <Name>carob cookie</Name>
+    <Number>10</Number>
+  </Item>
+  <Item>
+    <DateOfFreezing>2014-09-07T00:00:00+02:00</DateOfFreezing>
+    <Name>fl&#xF8;de</Name>
+    <Number>0.5</Number>
+  </Item>
+</ArrayOfItem>
+
