@@ -9,39 +9,17 @@ using System.Runtime.Serialization;
 
 namespace FreezerOrganizer.Data
 {
-    static class Serialization
+    internal static class Serialization<T> where T : class
     {
-        internal static List<T> DeserializeList<T>(string path) 
-            where T : class
+        // fileResource parameter only for unit testing purposes
+        internal static IList<T> DeserializeList(string path, FileStream fileStream, DataContractSerializer serializer) 
         {
-            var deserializedList = new List<T>();
-
-            if (File.Exists(path))
-            {
-                using (var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read))
-                {
-                    var serializer = new DataContractSerializer(typeof(List<T>));
-                    deserializedList = (List<T>)serializer.ReadObject(fileStream);
-                }
-            }
-
-            return deserializedList;
+            return (IList<T>)serializer.ReadObject(fileStream);
         }
 
-        internal static void SerializeList<T>(List<T> listToSerialize, string path) 
-            where T : class
+        internal static void SerializeList(IList<T> listToSerialize, FileStream fileStream, DataContractSerializer serializer)
         {
-            // FileMode.Create overwrites file if it already exists
-            if (path == "")
-            {
-                path = "temp.xml";
-            }
-
-            using (var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write))
-            {
-                var serializer = new DataContractSerializer(typeof(List<T>));
-                serializer.WriteObject(fileStream, listToSerialize);
-            }
+            serializer.WriteObject(fileStream, listToSerialize);
         }
     }
 }

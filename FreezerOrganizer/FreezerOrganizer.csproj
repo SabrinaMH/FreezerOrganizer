@@ -15,6 +15,7 @@
     <WarningLevel>4</WarningLevel>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -27,7 +28,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -82,7 +82,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Data\ISerializationResource.cs" />
+    <Compile Include="Data\ISerialization.cs" />
     <Compile Include="Data\Serialization.cs" />
+    <Compile Include="Data\SerializationWrapper.cs" />
+    <Compile Include="Model\IRepository.cs" />
     <Compile Include="Model\ISettings.cs" />
     <Compile Include="Model\ItemRepository.cs" />
     <Compile Include="Model\Settings.cs" />
@@ -94,9 +98,9 @@
     <Compile Include="ViewModel\SearchViewModel.cs" />
     <Compile Include="ViewModel\ItemViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
-    <Compile Include="ViewModel\RelayCommand.cs" />
+    <Compile Include="ViewModel\Helpers\RelayCommand.cs" />
     <Compile Include="ViewModel\SettingsViewModel.cs" />
-    <Compile Include="ViewModel\ViewModelBase.cs" />
+    <Compile Include="ViewModel\Helpers\ViewModelBase.cs" />
     <Compile Include="View\Converters\IgnoreNewItemPlaceholderConverter.cs" />
     <Compile Include="View\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>

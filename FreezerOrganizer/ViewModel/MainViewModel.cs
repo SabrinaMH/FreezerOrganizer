@@ -1,5 +1,6 @@
 ﻿using System.Windows.Input;
 using System.ComponentModel;
+using FreezerOrganizer.ViewModel.Helpers;
 
 namespace FreezerOrganizer.ViewModel
 {

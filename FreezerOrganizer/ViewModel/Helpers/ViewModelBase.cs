@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FreezerOrganizer.ViewModel
+namespace FreezerOrganizer.ViewModel.Helpers
 {
     public class ViewModelBase : INotifyPropertyChanged
     {

@@ -1,4 +1,5 @@
 ﻿using FreezerOrganizer.Model;
+using FreezerOrganizer.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

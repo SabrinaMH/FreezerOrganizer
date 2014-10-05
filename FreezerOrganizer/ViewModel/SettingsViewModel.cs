@@ -1,4 +1,6 @@
 ﻿using FreezerOrganizer.Model;
+using FreezerOrganizer.ViewModel.Helpers;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,15 +26,14 @@ namespace FreezerOrganizer.ViewModel
             {
                 if (_openFileDialog == null)
                 {
-                    _openFileDialog = new RelayCommand(param => ShowFileDialog());
+                    _openFileDialog = new RelayCommand(param => ShowFileDialog(new OpenFileDialog()));
                 }
                 return _openFileDialog;
             }
         }
 
-        private void ShowFileDialog()
+        private void ShowFileDialog(OpenFileDialog fileDialog)
         {
-            Microsoft.Win32.OpenFileDialog fileDialog = new Microsoft.Win32.OpenFileDialog();
             fileDialog.Filter = "XML files (*.xml)|*.xml";
             bool? isFileSelected = fileDialog.ShowDialog();
 

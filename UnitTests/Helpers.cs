@@ -11,49 +11,49 @@ namespace UnitTests
 {
     internal static class Helpers
     {
-        internal static string CreateEmptyFile(string fileType)
+        // check whether the collections contain the same objects (the order of them is not important)
+        internal static bool EquivalentCollections<T>(this IEnumerable<T> collection1, IEnumerable<T> collection2)
         {
-            var path = Path.GetTempFileName();
-            if (!string.IsNullOrWhiteSpace(fileType))
+            var cnt = new Dictionary<T, int>();
+            foreach (T s in collection1)
             {
-                path = Path.ChangeExtension(path, fileType);
-            }
-
-            return path;
-        }
-
-        internal static string CopyResourceToFile(string resourceName, string fileType, Assembly assemblyName)
-        {
-            Assembly assembly = assemblyName;
-            if (assembly == null)
-            {
-                assembly = Assembly.GetExecutingAssembly();
-            }
-
-            var path = CreateEmptyFile(fileType);
-
-            using (var resourceStream = assembly.GetManifestResourceStream(resourceName))
-            {
-                if (resourceStream != null)
+                if (cnt.ContainsKey(s))
                 {
-                    try
-                    {
-                        var dataLength = Convert.ToInt32(resourceStream.Length);
-                        var dataAsBytes = new byte[dataLength];
-                        resourceStream.Read(dataAsBytes, 0, dataLength);
-                        using (var outputStream = new StreamWriter(path))
-                        {
-                            outputStream.Write(Encoding.UTF8.GetString(dataAsBytes));
-                        }
-                    }
-                    catch (OverflowException e)
-                    {
-                        MessageBox.Show(e.Message);
-                    }
+                    cnt[s]++;
+                }
+                else
+                {
+                    cnt.Add(s, 1);
                 }
             }
+            foreach (T s in collection2)
+            {
+                if (cnt.ContainsKey(s))
+                {
+                    cnt[s]--;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return cnt.Values.All(c => c == 0);
+        }
 
-            return path;
+        internal static Stream GenerateStreamFromString(string str)
+        {
+            MemoryStream stream = new MemoryStream();
+            StreamWriter writer = new StreamWriter(stream);
+            writer.Write(str);
+            writer.Flush();
+            stream.Position = 0;
+            return stream;
+        }
+
+        internal static String GenerateStringFromStream(Stream stream)
+        {
+            StreamReader reader = new StreamReader(stream);
+            return reader.ReadToEnd();
         }
     }
 }

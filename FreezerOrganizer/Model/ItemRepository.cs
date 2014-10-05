@@ -8,13 +8,25 @@ using FreezerOrganizer.Data;
 namespace FreezerOrganizer.Model
 {
     // provides mechanism to interact with storage.
-    public class ItemRepository
+    public class ItemRepository : IRepository<Item>
     {
-        private List<Item> _items = new List<Item>();
+        private IList<Item> _items;
+        private ISerialization<Item> _serialization;
 
-        public ItemRepository() { }
+        public ItemRepository() 
+        {
+            _items = new List<Item>();
+            _serialization = new SerializationWrapper<Item>();
+        }
 
-        internal void Save(string path)
+        public ItemRepository(IEnumerable<Item> items, ISerialization<Item> serialization)
+        {
+            // todo: should I check whether the cast goes wrong?
+            _items = (List<Item>)items;
+            _serialization = serialization;
+        }
+
+        public void Save(string path)
         {
             var duplicateItems = new List<Item>();
             // Check for duplicates. Shouldn't be done in SerializeList, as this should be kept generic.
@@ -22,8 +34,10 @@ namespace FreezerOrganizer.Model
             {
                 if (!duplicateItems.Contains(item))
                 {
+                    // construct a copy of _items. Needed because _items is of type IList, which doesn't implement FindAll.
+                    var tempList = new List<Item>(_items);
                     // otherItem != item, as the list shouldn't contain the item itself
-                    var identicalItems = _items.FindAll(otherItem => otherItem != item && item.Equals(otherItem));
+                    var identicalItems = tempList.FindAll(otherItem => otherItem != item && item.Equals(otherItem));
                     foreach (var identicalItem in identicalItems)
                     {
                         item.UpdateNumber(item.Number + identicalItem.Number);
@@ -33,13 +47,12 @@ namespace FreezerOrganizer.Model
             }
 
             _items = _items.Except(duplicateItems).OrderBy(item => item.Name).ToList();
-
-            Serialization.SerializeList<Item>(_items, path);
+            _serialization.SerializeList(_items, path);
         }
 
-        internal List<Item> Load(string path)
+        public IList<Item> Load(string path)
         {
-            _items = Serialization.DeserializeList<Item>(path);
+            _items = (List<Item>)_serialization.DeserializeList(path);
             return _items;
         }
 
@@ -50,14 +63,16 @@ namespace FreezerOrganizer.Model
             return item;
         }
 
-        internal void Delete(Item item)
+        public void Delete(Item item)
         {
             _items.Remove(item);
         }
 
-        internal List<Item> Search(string input)
+        public IList<Item> Search(string input)
         {
-            return _items.FindAll(item => Contains(item.Name, input, StringComparison.OrdinalIgnoreCase));
+            // construct a copy of _items. Needed because _items is of type IList, which doesn't implement FindAll.
+            var tempList = new List<Item>(_items);
+            return tempList.FindAll(item => Contains(item.Name, input, StringComparison.OrdinalIgnoreCase));
         }
 
         // case insensitive search among the item names.

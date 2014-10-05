@@ -7,6 +7,7 @@ using FreezerOrganizer.Model;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Windows.Input;
+using FreezerOrganizer.ViewModel.Helpers;
 
 namespace FreezerOrganizer.ViewModel
 {
@@ -21,6 +22,13 @@ namespace FreezerOrganizer.ViewModel
         public SearchViewModel()
         {
             _itemRepository = new ItemRepository();
+            ItemViewModel.SetRepository(_itemRepository);
+        }
+
+        public SearchViewModel(IRepository<Item> itemRepository)
+        {
+            // todo: should I check whether the cast goes wrong?
+            _itemRepository = (ItemRepository)itemRepository;
             ItemViewModel.SetRepository(_itemRepository);
         }
 
@@ -102,7 +110,7 @@ namespace FreezerOrganizer.ViewModel
             Results = ConvertToObservableCollection(resultsAsItems);
         }
 
-        private ObservableCollection<ItemViewModel> ConvertToObservableCollection(List<Item> itemList)
+        private ObservableCollection<ItemViewModel> ConvertToObservableCollection(IList<Item> itemList)
         {
             var observableCollection = new ObservableCollection<ItemViewModel>();
             foreach (Item item in itemList)

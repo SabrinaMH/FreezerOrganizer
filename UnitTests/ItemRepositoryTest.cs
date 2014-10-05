@@ -8,42 +8,30 @@ using System.Runtime.Serialization;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Moq;
+using FreezerOrganizer.Data;
 
 namespace UnitTests
 {
     [TestClass]
     public class ItemRepositoryTest
     {
-        private Assembly _assembly;
-        private ItemRepository _itemRepo;
-        private const string testDataFileName = "TestData";
-        private const string testDataFileType = "xml";
-        private string testDataFullFileName;
+        private ItemRepository _itemRepository;
         private List<Item> _items;
+        private Mock<ISerialization<Item>> _mockSerialization;
 
         // make sure that each test is run on the same data set (necessary as some tests may modify it)
         [TestInitialize]
         public void InitTest()
         {
-            _items = new List<Item>()
-            {
-                // new TimeSpan(days, hours, minutes, seconds)
-                new Item("chokolade cookie", 10, DateTime.Today.Subtract(new TimeSpan(5,0,0,0))),
-                new Item("fløde", 0.5, DateTime.Today),
-                new Item("carob cookies", 1001, DateTime.Today.Subtract(new TimeSpan(2,0,0,0)))
-            };
-
-            _assembly = Assembly.GetExecutingAssembly();
-            _itemRepo = new ItemRepository();
-
-            var resourceNames = new List<string>(_assembly.GetManifestResourceNames());
-            testDataFullFileName = resourceNames.Find(name => name.Contains(testDataFileName));
+            _items = (List<Item>)TestData.GetList();
+            _mockSerialization = new Mock<ISerialization<Item>>();
+            _itemRepository = new ItemRepository(_items, _mockSerialization.Object);
         }
 
         [TestMethod]
         public void CreateNewItemTest()
         {
-            var item = _itemRepo.CreateNewItem();
+            var item = _itemRepository.CreateNewItem();
 
             Assert.AreEqual(item.Name, "", "Name isn't empty");
             Assert.AreEqual(item.Number, 0, "Number isn't 0");
@@ -53,36 +41,48 @@ namespace UnitTests
         [TestMethod]
         public void SearchTest()
         {
-            var itemRepo = new Mock<ItemRepository>();
-            itemRepo.Setup(x => x.Load("")).Returns(_items);
-
-            var results = itemRepo.Object.Search("cookie");
-            
+            var results = _itemRepository.Search("cookie");
             Assert.IsTrue(results.Count == 2, "Did not find two items containing 'cookie'");
         }
 
         [TestMethod]
         public void DeleteTest()
         {
-            _itemRepo.Load(Helpers.CopyResourceToFile(testDataFullFileName, testDataFileType, _assembly));
-            _itemRepo.Delete(_itemRepo.Search("cookie")[0]);
-            var results = _itemRepo.Search("cookie");
-            Assert.IsTrue(results.Count == 1, "Either all or none of the cookie items were deleted");
+            // copy by value such that oldList isn't affected when _items is modified by the Delete method
+            var oldList = new List<Item>(_items);
+            var itemToRemove = _items[0];
+
+            _itemRepository.Delete(itemToRemove);
+            oldList.Remove(itemToRemove);
+
+            Assert.IsTrue(Helpers.EquivalentCollections<Item>(oldList, _items), "The first element wasn't deleted");
         }
         
         [TestMethod]
         public void SaveTest()
         {
-            var outputFile = Helpers.CreateEmptyFile(testDataFileType);
-            var testDataFilePath = Helpers.CopyResourceToFile(testDataFullFileName, testDataFileType, _assembly);
-            _itemRepo.Load(testDataFilePath);
-            _itemRepo.Save(outputFile);
-            
-            var xmlDiffer = new Microsoft.XmlDiffPatch.XmlDiff(Microsoft.XmlDiffPatch.XmlDiffOptions.IgnoreWhitespace);
-            System.Xml.XmlWriter writer = System.Xml.XmlWriter.Create("C:\\Users\\Sabrina\\AppData\\Local\\Temp\\temp.xml");
-            var XmlFilesAreEqual = xmlDiffer.Compare(testDataFilePath, Path.GetFullPath(outputFile), true, writer);
-            var x = XmlFilesAreEqual;
-            //Assert.AreEqual(testDataFormatted, outputFormatted, "The content differ");
+            var nameOfDuplicateItem = "gulerod";
+            var oldNoItems = _items.Count;
+
+            /* mocks the SerializeList method just so that, if there should be a bug in this method, it doesn't affect this test.
+             * The callback ensures that this objects _items reflects the item list in _itemRepository
+             * (needed because _items.Except(...) in _itemRepository creates a new list in memory and 
+             * then assigns the _items reference in _itemRepository to the new list. Hence the change isn't reflected in this class).
+             * */
+            _mockSerialization.Setup(x => x.SerializeList(It.IsAny<IList<Item>>(), It.IsAny<string>()))
+                .Callback((IList<Item> list, string str) => _items = (List<Item>)list);
+
+            // adds two new items instead of just adding an extra of an already existing item to make the test more self-contained.
+            _items.Add(new Item(nameOfDuplicateItem, 1001, DateTime.Today.Subtract(new TimeSpan(2, 0, 0, 0))));
+            _items.Add(new Item(nameOfDuplicateItem, 1, DateTime.Today.Subtract(new TimeSpan(2, 0, 0, 0))));
+
+            _itemRepository.Save("");
+
+            Assert.IsTrue(_items.Count == oldNoItems + 1, "Incorrect no items saved");
+            Assert.IsTrue(_items.FindAll(item => item.Name == nameOfDuplicateItem).Count == 1, 
+                "More (or less) than 1 item of the duplicate were saved");
+            Assert.IsTrue(_items.Find(item => item.Name == nameOfDuplicateItem).Number == 1002, "Item number not incremented correctly");
+
         }
     }
 }
