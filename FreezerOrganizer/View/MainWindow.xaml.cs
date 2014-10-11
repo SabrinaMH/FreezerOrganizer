@@ -21,9 +21,12 @@ namespace FreezerOrganizer.View
     /// </summary>
     public partial class MainWindow : Window
     {
+        private const int spaceBelowAndAbove = 100;
+
         public MainWindow()
         {
             InitializeComponent();
+            this.MaxHeight = System.Windows.SystemParameters.PrimaryScreenHeight - spaceBelowAndAbove;
         }
     }
 }

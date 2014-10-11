@@ -11,7 +11,7 @@ namespace FreezerOrganizer.View.Converters
     // fixes bug in datagrid when adding a new row
     public class IgnoreNewItemPlaceholderConverter : IValueConverter
     {
-        private const string _newItemPlaceholderName = "{NewItemPlaceholder}";
+        internal const string _newItemPlaceholderName = "{NewItemPlaceholder}";
 
         public IgnoreNewItemPlaceholderConverter() { }
 

@@ -46,12 +46,12 @@
         <Button Command="{Binding SearchCommand}" 
                 Margin="30,0,0,20" Grid.Row="0" Grid.Column="1"
                 HorizontalAlignment="Left" Content="Search" Width="100" />
-        <DataGrid ItemsSource="{Binding Source={StaticResource SortedResults}}"
+        <DataGrid x:Name="ResultsGrid" ItemsSource="{Binding Source={StaticResource SortedResults}}"
                   SelectedItem="{Binding SelectedItem, Converter={StaticResource ignoreNewItemPlaceholderConverter}}"
                   AutoGenerateColumns="False"
                   CanUserAddRows="True"
                   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                  Grid.Row="1" Grid.ColumnSpan="4">
+                  Grid.Row="1" Grid.ColumnSpan="4" PreviewKeyDown="ResultsGrid_PreviewKeyDown">
             <DataGrid.CellStyle> <!-- if not included, the selected rows content disappears (todo: figure out why. Has to do with l. 16-26) -->
                 <Style TargetType="DataGridCell">
                     <Style.Triggers>

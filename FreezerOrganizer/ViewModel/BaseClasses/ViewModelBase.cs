@@ -6,15 +6,16 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
-namespace FreezerOrganizer.ViewModel.Helpers
+namespace FreezerOrganizer.ViewModel.BaseClasses
 {
     public class ViewModelBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual bool ThrowOnInvalidPropertyName { get; private set; }
+        protected bool ThrowOnInvalidPropertyName;
 
-        protected virtual void OnPropertyChanged(params string[] parameters)
+        public virtual void OnPropertyChanged(params string[] parameters)
         {
             if (PropertyChanged != null)
             {
@@ -29,7 +30,7 @@ namespace FreezerOrganizer.ViewModel.Helpers
         // Verify that the property name matches a real, public instance property on this object.
         [Conditional("DEBUG")]
         //[DebuggerStepThrough]
-        public virtual void VerifyPropertyName(string propertyName)
+        private void VerifyPropertyName(string propertyName)
         {
             bool foundProperty = false;
             var properties = this.GetType().GetProperties();
@@ -50,6 +51,12 @@ namespace FreezerOrganizer.ViewModel.Helpers
                 else
                     Debug.Fail(msg);
             }
+        }
+
+        internal bool IsInDesignMode()
+        {
+            var designProperty = DesignerProperties.IsInDesignModeProperty;
+            return (bool)DependencyPropertyDescriptor.FromProperty(designProperty, typeof(FrameworkElement)).Metadata.DefaultValue;
         }
     }
 }

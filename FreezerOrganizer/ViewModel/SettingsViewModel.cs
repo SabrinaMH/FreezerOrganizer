@@ -1,5 +1,5 @@
 ﻿using FreezerOrganizer.Model;
-using FreezerOrganizer.ViewModel.Helpers;
+using FreezerOrganizer.ViewModel.BaseClasses;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;

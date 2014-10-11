@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:FreezerOrganizer.View"
         xmlns:viewModel="clr-namespace:FreezerOrganizer.ViewModel"
         Title="Freezer Organizer"
-        SizeToContent="WidthAndHeight">
+        SizeToContent="WidthAndHeight"
+        WindowStartupLocation="CenterScreen">
     <Window.DataContext>
         <viewModel:MainViewModel />
     </Window.DataContext>

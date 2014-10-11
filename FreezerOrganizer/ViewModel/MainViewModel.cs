@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 using System.ComponentModel;
-using FreezerOrganizer.ViewModel.Helpers;
+using FreezerOrganizer.ViewModel.BaseClasses;
 
 namespace FreezerOrganizer.ViewModel
 {
@@ -12,6 +12,17 @@ namespace FreezerOrganizer.ViewModel
 
         public MainViewModel()
         {
+            /* Necessary to check, because in SourceUpdated the _itemRepository hasn't been created at design time.
+             * Do not check in release mode as it slows down production code.
+             * */
+            #if DEBUG
+            if (IsInDesignMode())
+            {
+                return;
+            }
+            #endif
+            
+            // todo - maybe use DI?
             // problem here. It's the views responsibility to initialize viewmodels - not other viewmodels.
             _searchViewModel = new SearchViewModel();
             _settingsViewModel = new SettingsViewModel();

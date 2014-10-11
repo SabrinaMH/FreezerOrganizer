@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace FreezerOrganizer.ViewModel.Helpers
+namespace FreezerOrganizer.ViewModel.BaseClasses
 {
     class RelayCommand : ICommand
     {

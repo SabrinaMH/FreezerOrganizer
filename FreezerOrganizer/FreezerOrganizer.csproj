@@ -95,12 +95,13 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="ViewModel\BaseClasses\Converters.cs" />
     <Compile Include="ViewModel\SearchViewModel.cs" />
     <Compile Include="ViewModel\ItemViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
-    <Compile Include="ViewModel\Helpers\RelayCommand.cs" />
+    <Compile Include="ViewModel\BaseClasses\RelayCommand.cs" />
     <Compile Include="ViewModel\SettingsViewModel.cs" />
-    <Compile Include="ViewModel\Helpers\ViewModelBase.cs" />
+    <Compile Include="ViewModel\BaseClasses\ViewModelBase.cs" />
     <Compile Include="View\Converters\IgnoreNewItemPlaceholderConverter.cs" />
     <Compile Include="View\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>

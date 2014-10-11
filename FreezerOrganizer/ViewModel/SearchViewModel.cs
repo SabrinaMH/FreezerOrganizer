@@ -7,7 +7,7 @@ using FreezerOrganizer.Model;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Windows.Input;
-using FreezerOrganizer.ViewModel.Helpers;
+using FreezerOrganizer.ViewModel.BaseClasses;
 
 namespace FreezerOrganizer.ViewModel
 {
@@ -34,7 +34,7 @@ namespace FreezerOrganizer.ViewModel
 
         internal void SourceUpdated(string path)
         {
-            Results = ConvertToObservableCollection(_itemRepository.Load(path));
+            Results = Converters.ConvertToObservableCollection<Item, ItemViewModel>(_itemRepository.Load(path));
             SelectedItem = Results.Count > 0 ? Results[0] : null;
         }
 
@@ -107,7 +107,7 @@ namespace FreezerOrganizer.ViewModel
         private void Search(string input)
         {
             var resultsAsItems = _itemRepository.Search(Input);
-            Results = ConvertToObservableCollection(resultsAsItems);
+            Results = Converters.ConvertToObservableCollection<Item, ItemViewModel>(resultsAsItems);
         }
 
         private ObservableCollection<ItemViewModel> ConvertToObservableCollection(IList<Item> itemList)

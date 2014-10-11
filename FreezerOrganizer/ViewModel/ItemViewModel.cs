@@ -1,5 +1,5 @@
 ﻿using FreezerOrganizer.Model;
-using FreezerOrganizer.ViewModel.Helpers;
+using FreezerOrganizer.ViewModel.BaseClasses;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,6 +13,7 @@ namespace FreezerOrganizer.ViewModel
     public class ItemViewModel : ViewModelBase
     {
         private Item _item = null;
+        // static as it should be shared among all instances of ItemViewModel
         private static ItemRepository _itemRepository;
 
         public ItemViewModel() // public parameterless constructor needed for users to add rows to the datagrid.
