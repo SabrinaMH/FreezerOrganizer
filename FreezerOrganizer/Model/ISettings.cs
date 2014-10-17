@@ -9,7 +9,6 @@ namespace FreezerOrganizer.Model
     interface ISettings
     {
         object this[string propertyName] { get; set; }
-
         void Save();
     }
 }
