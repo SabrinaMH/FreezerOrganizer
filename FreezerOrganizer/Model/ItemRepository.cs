@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FreezerOrganizer.Data;
+using System.IO;
 
 namespace FreezerOrganizer.Model
 {
@@ -16,7 +17,7 @@ namespace FreezerOrganizer.Model
         public ItemRepository() 
         {
             _items = new List<Item>();
-            _serialization = new SerializationWrapper<Item>();
+            _serialization = new FileSerialization<Item>();
         }
 
         public ItemRepository(IEnumerable<Item> items, ISerialization<Item> serialization)

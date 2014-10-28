@@ -5,22 +5,30 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace FreezerOrganizer.Data
 {
     // Extracted all the stuff that should be mocked in case I want to unit test the Serialization class
-    public class SerializationWrapper<T> : ISerialization<T> where T : class
+    public class FileSerialization<T> : ISerialization<T> where T : class
     {
+        private string _codePage;
+
+        public FileSerialization(string codePage = "utf-8")
+        {
+            this._codePage = codePage;
+        }
+
         public IList<T> DeserializeList(string path)
         {
             IList<T> deserializedList = null;
-
             if (File.Exists(path))
             {
-                using (var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read))
+                // XmlReader chosen over FileStream as this allows one to specify encoding
+                using (var xmlReader = XmlReader.Create(new StreamReader(path, Encoding.GetEncoding(_codePage))))
                 {
                     var serializer = new DataContractSerializer(typeof(List<T>));
-                    deserializedList = Serialization<T>.DeserializeList(path, fileStream, serializer);
+                    deserializedList = (IList<T>)serializer.ReadObject(xmlReader);
                 }
             }
 
@@ -29,13 +37,12 @@ namespace FreezerOrganizer.Data
 
         public void SerializeList(IList<T> listToSerialize, string path)
         {   
-            // FileMode.Create overwrites file if it already exists
-            if (path == "")
+            if (string.IsNullOrWhiteSpace(path))
             {
-                path = "temp.xml";
+                throw new ArgumentNullException("The path is empty.");
             }
 
-            using (var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write))
+            using (var xmlWriter = XmlWriter.Create(path))
             {
                 var serializer = new DataContractSerializer(typeof(List<T>));
                 /* Serialization<T>.SerializeList just contains a single line calling a method. 
@@ -43,7 +50,7 @@ namespace FreezerOrganizer.Data
                  * The purpose of the wrapper is to make it possible to mock the objects that we are not interested in
                  * when unit testing our Serialization class.
                  * */
-                Serialization<T>.SerializeList(listToSerialize, fileStream, serializer);
+                serializer.WriteObject(xmlWriter, listToSerialize);
             }
         }
     }

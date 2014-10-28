@@ -29,7 +29,7 @@ namespace FreezerOrganizer.Model
 
         internal bool Equals(Item item)
         {
-            bool sameDate = item.DateOfFreezing.Month == this.DateOfFreezing.Month && item.DateOfFreezing.Year == this.DateOfFreezing.Year;
+            bool sameDate = (item.DateOfFreezing.Month == this.DateOfFreezing.Month && item.DateOfFreezing.Year == this.DateOfFreezing.Year);
             return item.Name == this.Name && sameDate;
         }
 

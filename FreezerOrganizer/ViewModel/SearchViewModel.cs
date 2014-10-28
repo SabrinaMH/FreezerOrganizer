@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Windows.Input;
 using FreezerOrganizer.ViewModel.BaseClasses;
+using System.IO;
 
 namespace FreezerOrganizer.ViewModel
 {
@@ -34,8 +35,16 @@ namespace FreezerOrganizer.ViewModel
 
         internal void SourceUpdated(string path)
         {
-            Results = Converters.ConvertToObservableCollection<Item, ItemViewModel>(_itemRepository.Load(path));
-            SelectedItem = Results.Count > 0 ? Results[0] : null;
+            if (File.Exists(path))
+            {
+                IList<Item> items = _itemRepository.Load(path);
+                Results = Converters.ConvertToObservableCollection<Item, ItemViewModel>(items);
+                SelectedItem = Results.Count > 0 ? Results[0] : null;
+            }
+            else
+            {
+                throw new FileNotFoundException("File " + path + " does not exist.");
+            }
         }
 
         public string Input
