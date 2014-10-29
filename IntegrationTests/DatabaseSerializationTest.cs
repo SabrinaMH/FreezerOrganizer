@@ -30,16 +30,6 @@ namespace IntegrationTests
              * */
             _testData = TestData.GetList();
 
-            /*
-            Func<Item, JObject> objToJson =
-                o => new JObject(
-                    new JProperty("Name", o.Name),
-                    new JProperty("Number", o.Number),
-                    new JProperty("DateOfFreezing", o.DateOfFreezing));
-
-            var testDataAsJsonString = JsonConvert.SerializeObject(new JArray(_testData.Select(objToJson)));
-             * */
-
             // Chose UTF8 as php's json_decode needs to receive valid UTF8.
             var testDataAsBytes = Encoding.UTF8.GetBytes(GenericHelpers.Json<Item>.ListToJson(_testData));
             request.ContentType = "application/json";
@@ -55,7 +45,7 @@ namespace IntegrationTests
         [TestCategory("Integration Test")]
         public void UpdateAll()
         {
-            //_testData = new List<Item>() { new Item("gulerod", 300, DateTime.Today.AddDays(-6)) };
+            _testData = new List<Item>() { new Item("gulerod", 300, DateTime.Today.AddDays(-6)) };
             //_db = new DatabaseSerialization<Item>(new myWebClient(), "UTF8");
             //_db.SerializeList(_testData, "http://cssx.dk/Sabrina/Test/?action=/setup");
         }
