@@ -17,7 +17,8 @@ namespace FreezerOrganizer.Model
         public ItemRepository() 
         {
             _items = new List<Item>();
-            _serialization = new FileSerialization<Item>();
+            //_serialization = new FileSerialization<Item>();
+            _serialization = new DatabaseSerialization<Item>(new WebClientWrapper());
         }
 
         public ItemRepository(IEnumerable<Item> items, ISerialization<Item> serialization)
@@ -59,7 +60,7 @@ namespace FreezerOrganizer.Model
 
         internal Item CreateNewItem()
         {
-            var item = new Item("", 0, DateTime.Now);
+            var item = new Item("", 0, default(Item.Units), DateTime.Now);
             _items.Add(item);
             return item;
         }

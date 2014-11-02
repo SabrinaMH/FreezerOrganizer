@@ -35,16 +35,9 @@ namespace FreezerOrganizer.ViewModel
 
         internal void SourceUpdated(string path)
         {
-            if (File.Exists(path))
-            {
-                IList<Item> items = _itemRepository.Load(path);
-                Results = Converters.ConvertToObservableCollection<Item, ItemViewModel>(items);
-                SelectedItem = Results.Count > 0 ? Results[0] : null;
-            }
-            else
-            {
-                throw new FileNotFoundException("File " + path + " does not exist.");
-            }
+            IList<Item> items = _itemRepository.Load(path);
+            Results = Converters.ConvertToObservableCollection<Item, ItemViewModel>(items);
+            SelectedItem = Results.Count > 0 ? Results[0] : null;
         }
 
         public string Input

@@ -20,9 +20,8 @@ namespace UnitTests
         [TestInitialize]
         public void InitTest()
         {
-            var codePage = "iso-8859-1"; // one.com uses latin1
             _mockWebClient = new Mock<IWebClient>();
-            _dbSerialization = new DatabaseSerialization<TestClass>(_mockWebClient.Object, codePage);
+            _dbSerialization = new DatabaseSerialization<TestClass>(_mockWebClient.Object);
             _testData = new List<TestClass>() {
                 new TestClass() { Name = "testItem1", Number = 1,  Date = DateTime.UtcNow.Date },
                 new TestClass() { Name = "testItem2", Number = -4, Date = DateTime.UtcNow.AddDays(-2) }

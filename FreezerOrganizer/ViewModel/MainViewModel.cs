@@ -9,6 +9,8 @@ namespace FreezerOrganizer.ViewModel
         private SettingsViewModel _settingsViewModel;
         private SearchViewModel _searchViewModel;
         private ICommand _closingCommand;
+        private bool databaseSerialization = true; // todo: perhaps this choice shouldn't be stored here.
+        private string resourcePath;
 
         public MainViewModel()
         {
@@ -25,17 +27,27 @@ namespace FreezerOrganizer.ViewModel
             // todo - maybe use DI?
             // problem here. It's the views responsibility to initialize viewmodels - not other viewmodels.
             _searchViewModel = new SearchViewModel();
-            _settingsViewModel = new SettingsViewModel();
-            _settingsViewModel.PropertyChanged += SettingsViewModel_PropertyChanged;
-            // explicit call because if the Path setting is prefilled, then PropertyChanged won't be raised.
-            _searchViewModel.SourceUpdated(_settingsViewModel.Path);
+
+            if (!databaseSerialization)
+            {
+                _settingsViewModel = new SettingsViewModel();
+                _settingsViewModel.PropertyChanged += SettingsViewModel_PropertyChanged;
+                resourcePath = _settingsViewModel.Path;
+            }
+            else 
+            {
+                resourcePath = "http://cssx.dk/Sabrina/?action=/items"; // todo: clean up. the path to database shouldn't be hardcoded here.
+            }
+
+            // explicit call because if the resourcePath is prefilled, then PropertyChanged won't be raised.
+            _searchViewModel.SourceUpdated(resourcePath);
         }
 
         private void SettingsViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "Path")
             {
-                SearchViewModel.SourceUpdated(_settingsViewModel.Path);
+                SearchViewModel.SourceUpdated(resourcePath);
             }
         }
 
@@ -66,8 +78,12 @@ namespace FreezerOrganizer.ViewModel
 
         private void Closing()
         {
-            SearchViewModel.Save(SettingsViewModel.Path);
-            SettingsViewModel.Save();
+            if (SettingsViewModel != null)
+            {
+                SettingsViewModel.Save();
+            }
+
+            SearchViewModel.Save(resourcePath);
         }
     }
 }

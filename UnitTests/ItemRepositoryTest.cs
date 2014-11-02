@@ -73,8 +73,8 @@ namespace UnitTests
                 .Callback((IList<Item> list, string str) => _items = (List<Item>)list);
 
             // adds two new items instead of just adding an extra of an already existing item to make the test more self-contained.
-            _items.Add(new Item(nameOfDuplicateItem, 1001, DateTime.Today.Subtract(new TimeSpan(2, 0, 0, 0))));
-            _items.Add(new Item(nameOfDuplicateItem, 1, DateTime.Today.Subtract(new TimeSpan(2, 0, 0, 0))));
+            _items.Add(new Item(nameOfDuplicateItem, 1001, Item.Units.pc, DateTime.Today.Subtract(new TimeSpan(2, 0, 0, 0))));
+            _items.Add(new Item(nameOfDuplicateItem, 1, Item.Units.bag, DateTime.Today.Subtract(new TimeSpan(2, 0, 0, 0))));
 
             _itemRepository.Save("");
 

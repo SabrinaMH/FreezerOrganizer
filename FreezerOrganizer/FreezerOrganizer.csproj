@@ -93,6 +93,9 @@
     <Compile Include="Data\ISerialization.cs" />
     <Compile Include="Data\FileSerialization.cs" />
     <Compile Include="Data\IWebClient.cs" />
+    <Compile Include="Data\WebClientWrapper.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Model\IRepository.cs" />
     <Compile Include="Model\ISettings.cs" />
     <Compile Include="Model\ItemRepository.cs" />

@@ -74,6 +74,19 @@ namespace FreezerOrganizer.ViewModel
             }
         }
 
+        public Item.Units Unit
+        {
+            get { return Item.Unit; }
+            set
+            {
+                if (Item.Unit != value)
+                {
+                    Item.Unit = value;
+                    OnPropertyChanged("Unit");
+                }
+            }
+        }
+
         public DateTime DateOfFreezing
         {
             get { return Item.DateOfFreezing; }

@@ -14,7 +14,6 @@ namespace IntegrationTests
     [TestClass]
     public class DatabaseSerializationTest
     {
-        private class myWebClient : System.Net.WebClient, IWebClient { }
         private DatabaseSerialization<Item> _db;
         private static List<Item> _testData;
 
@@ -43,11 +42,16 @@ namespace IntegrationTests
 
         [TestMethod]
         [TestCategory("Integration Test")]
-        public void UpdateAll()
+        public void Update()
         {
-            _testData = new List<Item>() { new Item("gulerod", 300, DateTime.Today.AddDays(-6)) };
-            //_db = new DatabaseSerialization<Item>(new myWebClient(), "UTF8");
-            //_db.SerializeList(_testData, "http://cssx.dk/Sabrina/Test/?action=/setup");
+            var updatedItem = new Item("chokolade cookie", 20, Item.Units.pc, DateTime.Today.Subtract(new TimeSpan(5, 0, 0, 0)));
+            var itemsToUpdate = new List<Item>() { updatedItem };
+            _db = new DatabaseSerialization<Item>(new WebClientWrapper());
+            _db.SerializeList(itemsToUpdate, "http://cssx.dk/Sabrina/Test/?action=/update");
+            var result = (List<Item>)_db.DeserializeList("http://cssx.dk/Sabrina/Test/?action=/items");
+            
+            Assert.IsTrue(result.Any(item => item.Equals(updatedItem)), "Item was not correctly updated.");
+            Assert.IsTrue(result[1].Equals(_testData[1]) && result[2].Equals(_testData[2]), "The others items did not remain unaltered");
         }
 
 
