@@ -60,7 +60,7 @@ namespace FreezerOrganizer.Model
 
         internal Item CreateNewItem()
         {
-            var item = new Item("", 0, default(Item.Units), DateTime.Now);
+            var item = new Item("", 0, default(Item.Units));
             _items.Add(item);
             return item;
         }

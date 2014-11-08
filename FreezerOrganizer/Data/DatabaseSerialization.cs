@@ -16,7 +16,7 @@ namespace FreezerOrganizer.Data
 
         public void SerializeList(IList<T> list, string path)
         {
-            var listAsJson = JsonConvert.SerializeObject(list);
+            var listAsJson = JsonConvert.SerializeObject(list, new Newtonsoft.Json.Converters.StringEnumConverter());
             // because _webClient.Encoding hasn't been set, System.Text.Encoding.Default is used, which is ISO-8895-1
             _webClient.UploadString(path, "PUT", listAsJson);
         }
@@ -30,7 +30,7 @@ namespace FreezerOrganizer.Data
             }
 
             var jsonData = _webClient.DownloadString(path);
-            return JsonConvert.DeserializeObject<IList<T>>(jsonData);
+            return JsonConvert.DeserializeObject<IList<T>>(jsonData, new Newtonsoft.Json.Converters.StringEnumConverter());
         }
     }
 }

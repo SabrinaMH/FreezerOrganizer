@@ -1,4 +1,6 @@
-﻿ using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -21,12 +23,24 @@ namespace FreezerOrganizer.Model
         public DateTime DateOfFreezing { get; set; }
         [DataMember()]
         public Units Unit { get; set; }
-        
-        public Item(string name, double number, Units unit, DateTime dateOfFreezing)
+
+        public static readonly DateTime defaultDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+
+        public Item(string name, double number, Units unit)
         {
             this.Name = name;
             this.Number = number;
             this.Unit = unit;
+
+            if (this.DateOfFreezing == null)
+            {
+                this.DateOfFreezing = defaultDate;
+            }
+        }
+
+        [JsonConstructor]
+        public Item(string name, double number, Units unit, DateTime dateOfFreezing) : this(name, number, unit)
+        {
             this.DateOfFreezing = dateOfFreezing.Date;
         }
 

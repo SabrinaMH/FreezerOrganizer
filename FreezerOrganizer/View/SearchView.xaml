@@ -2,8 +2,10 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:viewModel="clr-namespace:FreezerOrganizer.ViewModel"
+             xmlns:model="clr-namespace:FreezerOrganizer.Model"
              xmlns:converters="clr-namespace:FreezerOrganizer.View.Converters"
              xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:global="clr-namespace:System.Globalization;assembly=mscorlib"
              Loaded="UserControl_Loaded">
     <UserControl.Resources>
@@ -62,6 +64,11 @@
                   SelectedItem="{Binding SelectedItem, Converter={StaticResource ignoreNewItemPlaceholderConverter}}"
                   Grid.Row="1" Grid.ColumnSpan="4" PreviewKeyDown="ResultsGrid_PreviewKeyDown">   
             <DataGrid.Resources>
+                <ObjectDataProvider x:Key="UnitsEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+                    <ObjectDataProvider.MethodParameters>
+                        <x:Type TypeName="model:Item+Units" />
+                    </ObjectDataProvider.MethodParameters>
+                </ObjectDataProvider>
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#FFFFEDA2" />
                 <SolidColorBrush x:Key="{x:Static DataGrid.FocusBorderBrushKey}" Color="Transparent" />
@@ -82,13 +89,16 @@
                 <Style x:Key="CellRightAligned" TargetType="DataGridCell">
                     <Setter Property="HorizontalAlignment" Value="Right" />
                 </Style>
+                <Style TargetType="ComboBoxItem">
+                    <Setter Property="Background" Value="{StaticResource RowBackground}" />
+                </Style>
             </DataGrid.Resources>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="Auto" 
                                     HeaderStyle="{StaticResource HeaderWithLeftPadding}"/>
                 <DataGridTextColumn Header="Number" Binding="{Binding Number}" 
                                     HeaderStyle="{StaticResource HeaderWithLeftPadding}" CellStyle="{StaticResource CellRightAligned}" />
-                <DataGridTextColumn Header="Unit" Binding="{Binding Unit}"
+                <DataGridComboBoxColumn Header="Unit" ItemsSource="{Binding Source={StaticResource UnitsEnum}}" SelectedValueBinding="{Binding Unit}" CellStyle="{StaticResource CellRightAligned}"
                                     HeaderStyle="{StaticResource HeaderWithLeftPadding}" />
                 <DataGridTextColumn Header="Date" Binding="{Binding DateOfFreezing, StringFormat='MMM yy'}" 
                                     HeaderStyle="{StaticResource HeaderWithLeftRightPadding}" CellStyle="{StaticResource CellRightAligned}" />

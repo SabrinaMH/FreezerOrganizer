@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using FreezerOrganizer.Data;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace UnitTests
 {
@@ -23,8 +24,8 @@ namespace UnitTests
             _mockWebClient = new Mock<IWebClient>();
             _dbSerialization = new DatabaseSerialization<TestClass>(_mockWebClient.Object);
             _testData = new List<TestClass>() {
-                new TestClass() { Name = "testItem1", Number = 1,  Date = DateTime.UtcNow.Date },
-                new TestClass() { Name = "testItem2", Number = -4, Date = DateTime.UtcNow.AddDays(-2) }
+                new TestClass() { Name = "testItem1", Unit = TestClass.Units.pc, Number = 1,  Date = DateTime.UtcNow.Date },
+                new TestClass() { Name = "testItem2", Unit = TestClass.Units.dl, Number = -4, Date = DateTime.UtcNow.AddDays(-2) }
             };
         }
 
@@ -48,6 +49,8 @@ namespace UnitTests
         [DataContract()]
         private class TestClass 
         {
+            public enum Units { pc, dl, g, bag, serv };
+
             [DataMember()]
             public string Name { get; set; }
 
@@ -57,9 +60,12 @@ namespace UnitTests
             [DataMember()]
             public DateTime Date { get; set; }
 
+            [DataMember()]
+            public Units Unit { get; set; }
+
             public bool Equals(TestClass otherObj)
             {
-                return this.Name == otherObj.Name && this.Number == otherObj.Number && this.Date == otherObj.Date;
+                return this.Name == otherObj.Name && this.Unit == otherObj.Unit && this.Date == otherObj.Date;
             }
         }
     }

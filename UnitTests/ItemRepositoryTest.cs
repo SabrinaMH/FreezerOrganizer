@@ -35,7 +35,8 @@ namespace UnitTests
 
             Assert.AreEqual(item.Name, "", "Name isn't empty");
             Assert.AreEqual(item.Number, 0, "Number isn't 0");
-            Assert.IsTrue(item.DateOfFreezing.CompareTo(DateTime.Now) < 0, "The item's timestamp isn't earlier than right now");
+            Assert.IsTrue(item.DateOfFreezing.CompareTo(Item.defaultDate) < 0, 
+                "The item's timestamp isn't earlier than the first of current month");
         }
 
         [TestMethod]
@@ -74,7 +75,7 @@ namespace UnitTests
 
             // adds two new items instead of just adding an extra of an already existing item to make the test more self-contained.
             _items.Add(new Item(nameOfDuplicateItem, 1001, Item.Units.pc, DateTime.Today.Subtract(new TimeSpan(2, 0, 0, 0))));
-            _items.Add(new Item(nameOfDuplicateItem, 1, Item.Units.bag, DateTime.Today.Subtract(new TimeSpan(2, 0, 0, 0))));
+            _items.Add(new Item(nameOfDuplicateItem, 1, Item.Units.pc, DateTime.Today.Subtract(new TimeSpan(2, 0, 0, 0))));
 
             _itemRepository.Save("");
 

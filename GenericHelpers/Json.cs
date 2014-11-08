@@ -21,6 +21,11 @@ namespace GenericHelpers
 
         private static JProperty PropertyToJProperty(PropertyInfo propInfo, T obj)
         {
+            if (propInfo.PropertyType.IsEnum)
+            {
+                return new JProperty(propInfo.Name, propInfo.GetValue(obj).ToString());
+            }
+
             return new JProperty(propInfo.Name, propInfo.GetValue(obj));
         }
     }
