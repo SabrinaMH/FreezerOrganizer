@@ -12,7 +12,7 @@ namespace FreezerOrganizer.Model
     [DataContract()]
     public class Item 
     {
-        public enum Units { pc, dl, g, bag, serv };
+        public enum Units { bag, dl, g, pc, serv };
 
         // sabrh todo: research - want to update model object. Are public setters the way to go?
         [DataMember()]
@@ -20,7 +20,7 @@ namespace FreezerOrganizer.Model
         [DataMember()]
         public double Number { get; private set; }
         [DataMember()]
-        public DateTime DateOfFreezing { get; set; }
+        public DateTime DateOfFreezing { get; set; } // nullable such that the default value is NULL and not some weird date
         [DataMember()]
         public Units Unit { get; set; }
 
@@ -31,11 +31,7 @@ namespace FreezerOrganizer.Model
             this.Name = name;
             this.Number = number;
             this.Unit = unit;
-
-            if (this.DateOfFreezing == null)
-            {
-                this.DateOfFreezing = defaultDate;
-            }
+            this.DateOfFreezing = defaultDate;
         }
 
         [JsonConstructor]

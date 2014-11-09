@@ -69,6 +69,9 @@
                         <x:Type TypeName="model:Item+Units" />
                     </ObjectDataProvider.MethodParameters>
                 </ObjectDataProvider>
+                <DataTemplate x:Key="ComboboxColumn">
+                    <ComboBox ItemsSource="{Binding Source={StaticResource UnitsEnum}}" SelectedItem="{Binding Unit}" />
+                </DataTemplate>
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#FFFFEDA2" />
                 <SolidColorBrush x:Key="{x:Static DataGrid.FocusBorderBrushKey}" Color="Transparent" />
@@ -98,7 +101,7 @@
                                     HeaderStyle="{StaticResource HeaderWithLeftPadding}"/>
                 <DataGridTextColumn Header="Number" Binding="{Binding Number}" 
                                     HeaderStyle="{StaticResource HeaderWithLeftPadding}" CellStyle="{StaticResource CellRightAligned}" />
-                <DataGridComboBoxColumn Header="Unit" ItemsSource="{Binding Source={StaticResource UnitsEnum}}" SelectedValueBinding="{Binding Unit}" CellStyle="{StaticResource CellRightAligned}"
+                <DataGridTemplateColumn CellTemplate="{StaticResource ComboboxColumn}" Header="Unit" CellStyle="{StaticResource CellRightAligned}"
                                     HeaderStyle="{StaticResource HeaderWithLeftPadding}" />
                 <DataGridTextColumn Header="Date" Binding="{Binding DateOfFreezing, StringFormat='MMM yy'}" 
                                     HeaderStyle="{StaticResource HeaderWithLeftRightPadding}" CellStyle="{StaticResource CellRightAligned}" />
