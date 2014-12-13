@@ -32,5 +32,16 @@ namespace FreezerOrganizer.Data
             var jsonData = _webClient.DownloadString(path);
             return JsonConvert.DeserializeObject<IList<T>>(jsonData, new Newtonsoft.Json.Converters.StringEnumConverter());
         }
+
+        public void DeleteList(IList<T> list, string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                throw new ArgumentNullException("Path is null or empty");
+            }
+
+            var listAsJson = JsonConvert.SerializeObject(list, new Newtonsoft.Json.Converters.StringEnumConverter());
+            _webClient.UploadString(path, "DELETE", listAsJson);
+        }
     }
 }

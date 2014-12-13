@@ -11,5 +11,6 @@ namespace FreezerOrganizer.Data
     {
         IList<T> DeserializeList(string path);
         void SerializeList(IList<T> listToSerialize, string path);
+        void DeleteList(IList<T> listToDelete, string path);
     }
 }

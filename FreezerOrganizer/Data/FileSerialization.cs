@@ -53,5 +53,12 @@ namespace FreezerOrganizer.Data
                 serializer.WriteObject(xmlWriter, listToSerialize);
             }
         }
+
+        public void DeleteList(IList<T> listToDelete, string path)
+        {
+            /* empty implementation as I do not control how the list is written 
+             * (I've delegated this to XmlWriter and as this writes the file from scratch each time, there's no need to delete items).
+             * */
+        }
     }
 }

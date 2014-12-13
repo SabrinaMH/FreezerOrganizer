@@ -11,6 +11,7 @@ namespace FreezerOrganizer.ViewModel
         private ICommand _closingCommand;
         private bool databaseSerialization = true; // todo: perhaps this choice shouldn't be stored here.
         private string resourcePath;
+        private bool _isDatabaseSerializationEnabled = false;
 
         public MainViewModel()
         {
@@ -33,9 +34,11 @@ namespace FreezerOrganizer.ViewModel
                 _settingsViewModel = new SettingsViewModel();
                 _settingsViewModel.PropertyChanged += SettingsViewModel_PropertyChanged;
                 resourcePath = _settingsViewModel.Path;
+                isDatabaseSerializationEnabled = false;
             }
             else 
             {
+                isDatabaseSerializationEnabled = true;
                 resourcePath = "http://cssx.dk/Sabrina/?action=/items"; // todo: clean up. the path to database shouldn't be hardcoded here.
             }
 
@@ -84,6 +87,19 @@ namespace FreezerOrganizer.ViewModel
             }
 
             SearchViewModel.Save(resourcePath);
+        }
+
+        public bool isDatabaseSerializationEnabled
+        {
+            get { return _isDatabaseSerializationEnabled; }
+            set
+            {
+                if (_isDatabaseSerializationEnabled != value)
+                {
+                    _isDatabaseSerializationEnabled = value;
+                    OnPropertyChanged("isDatabaseSerializationEnabled");
+                }
+            }
         }
     }
 }

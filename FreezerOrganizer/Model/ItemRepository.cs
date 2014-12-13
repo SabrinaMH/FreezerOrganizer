@@ -13,19 +13,22 @@ namespace FreezerOrganizer.Model
     {
         private IList<Item> _items;
         private ISerialization<Item> _serialization;
+        private IList<Item> deletedItems;
 
         public ItemRepository() 
         {
             _items = new List<Item>();
             //_serialization = new FileSerialization<Item>();
             _serialization = new DatabaseSerialization<Item>(new WebClientWrapper());
+            deletedItems = new List<Item>();
         }
 
-        public ItemRepository(IEnumerable<Item> items, ISerialization<Item> serialization)
+        public ItemRepository(IEnumerable<Item> items, ISerialization<Item> serialization) 
         {
             // todo: should I check whether the cast goes wrong?
             _items = (List<Item>)items;
             _serialization = serialization;
+            deletedItems = new List<Item>();
         }
 
         public void Save(string path)
@@ -49,6 +52,7 @@ namespace FreezerOrganizer.Model
             }
 
             _items = _items.Except(duplicateItems).OrderBy(item => item.Name).ToList();
+            _serialization.DeleteList(deletedItems, path);
             _serialization.SerializeList(_items, path);
         }
 
@@ -68,6 +72,7 @@ namespace FreezerOrganizer.Model
         public void Delete(Item item)
         {
             _items.Remove(item);
+            deletedItems.Add(item);
         }
 
         public IList<Item> Search(string input)

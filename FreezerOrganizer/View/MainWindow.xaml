@@ -11,11 +11,16 @@
     <Window.DataContext>
         <viewModel:MainViewModel />
     </Window.DataContext>
-    <Window.InputBindings>
-        <KeyBinding Key="S" 
-                    Modifiers="Control" 
-                    Command="{Binding SearchCommand}" />
-    </Window.InputBindings>
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <Style TargetType="{x:Type UserControl}" x:Key="settingsViewVisible">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding isDatabaseSerializationEnabled, UpdateSourceTrigger=PropertyChanged}">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closing">
             <i:InvokeCommandAction Command="{Binding ClosingCommand}" />
@@ -31,7 +36,7 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <local:SearchView DataContext="{Binding SearchViewModel}" Grid.Row="0" Grid.Column="0" />
-            <local:SettingsView DataContext="{Binding SettingsViewModel}" Grid.Row="1" Grid.Column="0" />
+            <local:SettingsView x:Name="settingsView" Style="{DynamicResource settingsViewVisible}" DataContext="{Binding SettingsViewModel}" Grid.Row="1" Grid.Column="0" />
         </Grid>
     </UserControl>
 </Window>
